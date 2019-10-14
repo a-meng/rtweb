@@ -1,0 +1,7 @@
+<ul>
+    <ng-container *ngFor="let m of menus">
+        <li>
+            <a [routerLink]="[ m.path ]" routerLinkActive='active'>{{m.label}}</a>
+        </li>
+    </ng-container>
+</ul>

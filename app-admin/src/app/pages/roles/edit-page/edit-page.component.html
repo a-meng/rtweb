@@ -1,0 +1,14 @@
+<h2>{{form.id?'编辑':'添加'}}角色</h2>
+<form (submit)='onSubmit()'>
+    <div>id: <strong>{{form.id}}</strong></div>
+    <div>
+        pid: <strong>{{form.pid}}</strong>
+    </div>
+    <div>name:
+        <input type="text" [(ngModel)]="form.name" name='name'>
+    </div>
+    <div *ngIf='form.id'>
+        <a [routerLink]="[ '..','perms' ]">配置权限</a>
+    </div>
+    <button type='submit'>提交</button>
+</form>

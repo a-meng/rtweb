@@ -1,0 +1,21 @@
+<form (submit)='$event.preventDefault();onSubmit();'>
+    <div>
+        id: <strong>{{form.id||'添加'}}</strong>
+    </div>
+    <div>
+        pid: <strong>{{form.pid}}</strong>
+    </div>
+    <div>
+        name: <input type="text" [(ngModel)]="form.name" name='name'>
+    </div>
+    <div>
+        value: <input type="text" [(ngModel)]="form.value" name='value'>
+    </div>
+    <div>
+        attr: <input type="text" [(ngModel)]="form.attr" name='attr'>
+    </div>
+    <div>
+        desc: <textarea type="text" [(ngModel)]="form.desc" name='desc'></textarea>
+    </div>
+    <button type="submit">保 存</button>
+</form>

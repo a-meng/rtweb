@@ -1,0 +1,13 @@
+<button [routerLink]="['create']" *ngIf='hasEditPerm'>添加角色</button>
+<app-tree [data]='roleList' [tpl]='treeNode'>
+    <ng-template #treeNode let-node='node'>
+        <div class='node-container'>
+            <div class='node-name'>{{node.node.name}}</div>
+            <div class='node-btns' *ngIf='hasEditPerm'>
+                <a [routerLink]="[ node.id,'edit' ]">编辑</a>
+                <a [routerLink]="[ 'create' ]" [queryParams]='{pid:node.id}'>添加子项</a>
+                <a href='#' (click)='$event.preventDefault();onDeleteById(node.id)'>删除</a>
+            </div>
+        </div>
+    </ng-template>
+</app-tree>

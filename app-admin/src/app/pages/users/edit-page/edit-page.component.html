@@ -1,0 +1,22 @@
+<form (submit)='onSubmit($event)'>
+    <div *ngIf='form.id'>
+        <label>ID</label>
+        <strong>{{form.id}}</strong>
+    </div>
+    <div *ngIf="!form.id">
+        <label>添加新用户</label>
+    </div>
+    <div>
+        <label>name</label>
+        <input type="text" [(ngModel)]="form.name" name='name'>
+    </div>
+    <div>
+        <label>email</label>
+        <input type="text" [(ngModel)]="form.email" name='email'>
+    </div>
+    <div>
+        <label>pwd</label>
+        <input type="text" [(ngModel)]="form.pwd" name='pwd'>
+    </div>
+    <button type='submit'>提交</button>
+</form>

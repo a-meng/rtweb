@@ -1,0 +1,13 @@
+<form (submit)='$event.preventDefault();onSubmit()'>
+
+    <div>
+        email:
+        <input type="text" name="email" [(ngModel)]="form.email">
+    </div>
+
+    <div>
+        pwd:
+        <input type="text" name="pwd" [(ngModel)]="form.pwd">
+    </div>
+    <button type='submit'>登 录</button>
+</form>

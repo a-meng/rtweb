@@ -1,0 +1,14 @@
+<div>
+    <strong>配置权限</strong>
+
+    <app-tree [data]='permList' [tpl]='treeNode'>
+        <ng-template #treeNode let-node='node'>
+            <label class='node-container'>
+                <input type="checkbox" [checked]='selected.includes(node.id)' (change)='onChange(node.id,$event.target.checked)'>
+                {{node.node.name}}
+            </label>
+        </ng-template>
+    </app-tree>
+
+    <button (click)='onSave()'>保 存</button>
+</div>

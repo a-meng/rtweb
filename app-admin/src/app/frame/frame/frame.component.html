@@ -1,0 +1,20 @@
+<header>
+    <div style='font-size:24px;'>权限管理系统</div>
+    <ng-container *ngIf='sess'>
+        <a href="/rt">实时</a>
+        <a href="/report">报表</a>
+    </ng-container>
+    <div style='margin-left:auto;' [ngSwitch]="sess">
+        <a *ngSwitchCase="null" [routerLink]="[ '/login']">登录</a>
+        <ng-container *ngSwitchDefault>
+            {{sess?.name}}
+            [<a href='#' (click)="$event.preventDefault();onLogout()">退出</a>]
+        </ng-container>
+    </div>
+</header>
+<aside>
+    <app-app-aside-menu [sess]='sess'></app-app-aside-menu>
+</aside>
+<main>
+    <router-outlet></router-outlet>
+</main>

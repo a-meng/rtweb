@@ -1,0 +1,31 @@
+<button style='margin-bottom:10px;' [routerLink]="[ 'create']">添加用户</button>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>name</th>
+            <th>email</th>
+            <th>role</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let u of userList">
+            <td>{{u.id}}</td>
+            <td>{{u.name}}</td>
+            <td>{{u.email}}</td>
+            <td>
+                <span *ngFor='let r of u.roles' style='background:rgba(0,0,0,.1);padding:1px 4px;font-size:12px;'>{{r.name}}</span>
+                <a [routerLink]="[u.id+'/role']">修改</a>
+            </td>
+            <td>
+                <ng-container>
+                    &nbsp;
+                    <button [routerLink]="[u.id+'/edit']">编辑</button>
+                    &nbsp;
+                    <button (click)='onDeleteById(u.id)'>删除</button>
+                </ng-container>
+            </td>
+        </tr>
+    </tbody>
+</table>

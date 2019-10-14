@@ -1,0 +1,13 @@
+<button [routerLink]="['create']" *ngIf='hasEditPerm'>添加权限</button>
+<app-tree [data]='permList' [tpl]='treeNode'>
+    <ng-template #treeNode let-node='node'>
+        <div class='node-container'>
+            <div class='node-name'>{{node.node.name}} <small style='color:gray;'>{{node.node.value}}</small></div>
+            <div class='node-btns' *ngIf='hasEditPerm'>
+                <a [routerLink]="[ node.id,'edit' ]">编辑</a>
+                <a [routerLink]="[ 'create' ]" [queryParams]='{pid:node.id}'>添加子项</a>
+                <a href='#' (click)='$event.preventDefault();onDeleteById(node.id)'>删除</a>
+            </div>
+        </div>
+    </ng-template>
+</app-tree>

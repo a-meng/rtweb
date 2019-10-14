@@ -1,0 +1,18 @@
+.node-container {
+    display: flex;
+    align-items: center;
+
+    &:hover .node-btns {
+        opacity: 1;
+    }
+}
+
+
+.node-btns {
+    opacity: 0;
+    margin-left: 10px;
+    a{
+        display: inline-block;
+        padding:2px 4px;
+    }
+}
