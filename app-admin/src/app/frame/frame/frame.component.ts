@@ -1,21 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Sess } from 'src/app/services/sess.service';
+import { Subscription } from 'rxjs';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
-  selector: 'app-frame',
-  templateUrl: './frame.component.html',
-  styleUrls: ['./frame.component.scss']
+    selector: 'app-frame',
+    templateUrl: './frame.component.html',
+    styleUrls: ['./frame.component.scss']
 })
-export class FrameComponent implements OnInit {
+export class FrameComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+    sess: Sess = null;
 
-  ngOnInit() {
-  }
-  onLogout() {
-    // this.sessServ.logout().subscribe(res => {
-    //     if (res) {
-    //         this.router.navigate(['/login']);
-    //     }
-    // });
-}
+    private subscription = new Subscription();
+    constructor(
+        private storeServ: StoreService
+    ) {
+        this.subscription.add(
+            this.storeServ.sessSubject.subscribe(res => this.sess = res)
+        );
+    }
+
+    ngOnInit() {
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+    onLogout() {
+
+    }
+
 }

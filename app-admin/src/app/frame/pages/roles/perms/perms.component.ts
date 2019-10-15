@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IPerm, PermsService } from '../../../services/permissions.service';
-import { IRole, RolesService } from '../../../services/roles.service';
+import { IPerm, PermsService } from '../../../../services/permissions.service';
+import { IRole, RolesService } from '../../../../services/roles.service';
 import { Subscription } from 'rxjs';
 @Component({
     selector: 'app-perms',

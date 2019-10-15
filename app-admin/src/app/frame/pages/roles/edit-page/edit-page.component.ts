@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IRole, RolesService, CreateRoleService, UpdateRoleService } from '../../../services/roles.service';
+import { IRole, RolesService, CreateRoleService, UpdateRoleService } from '../../../../services/roles.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 @Component({

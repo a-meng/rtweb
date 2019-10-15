@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UsersService, IUser, DeleteUserService } from '../../../services/users.service';
+import { UsersService, IUser, DeleteUserService } from '../../../../services/users.service';
 import { switchMap } from 'rxjs/operators';
 @Component({
     selector: 'app-list-page',

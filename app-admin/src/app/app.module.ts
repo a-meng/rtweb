@@ -8,36 +8,25 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 
-// 主要功能模块
-import { UsersModule } from './pages/users/users.module';
-import { RolesModule } from './pages/roles/roles.module';
-import { PermissionsModule } from './pages/permissions/permissions.module';
 
 import { SharedModule } from './shared/shared.module';
-import { Page404Component } from './page404/page404.component';
-import { WelcomeComponent } from './welcome/welcome.component';
+
 import { GraphQLModule } from './graphql.module';
 @NgModule({
     declarations: [
         AppComponent,
-        LoginComponent,
-        Page404Component,
-        WelcomeComponent,
+        LoginComponent
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
         FormsModule,
         RouterModule,
+        GraphQLModule,
+
         SharedModule,
 
-        UsersModule,
-        RolesModule,
-        PermissionsModule,
-
-        AppRoutingModule,
-
-        GraphQLModule,
+        AppRoutingModule
     ],
     providers: [],
     bootstrap: [AppComponent]

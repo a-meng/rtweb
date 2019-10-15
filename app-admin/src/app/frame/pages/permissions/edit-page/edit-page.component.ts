@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IPerm, IPermDocInput, PermsService, CreatePermService, UpdatePermService } from '../../../services/permissions.service';
+import { IPerm, IPermDocInput, PermsService, CreatePermService, UpdatePermService } from '../../../../services/permissions.service';
 import { switchMap } from 'rxjs/operators';
 import { pick } from 'lodash';
 import { Subscription } from 'rxjs';

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IPerm, PermsService, DeletePermService } from '../../../services//permissions.service';
+import { IPerm, PermsService, DeletePermService } from '../../../../services//permissions.service';
 import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 @Component({

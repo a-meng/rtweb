@@ -8,9 +8,9 @@ export class StoreService {
     constructor(
         private sessServ: SessService
     ) {
-        this.sessServ.fetch().subscribe(res => {
-            console.info('sessServ.fetch', res.data.sess);
-            this.sessSubject.next(res.data.sess);
-        });
+        // this.sessServ.fetch().subscribe(res => {
+        //     console.info('sessServ.fetch', res.data.sess);
+        //     this.sessSubject.next(res.data.sess);
+        // });
     }
 }

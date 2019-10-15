@@ -19,21 +19,16 @@ export class AuthGuard implements CanActivate {
         console.info('next.url', next.url);
         console.info('state.url', state.url);
 
-        if (state.url.indexOf('/login') === 0) {
-            return true;
-        }
-
         return this.storeServ.sessSubject
             .pipe(
                 first(),
                 map(res => {
-                    console.info('鉴权', res);
+                    console.info('auth.guard->canActivate', res);
                     // 未登录
                     if (!res) {
                         this.router.navigateByUrl('/login');
                         return false;
                     } else {
-                        console.info(res);
                         // 登录鉴权
                         return true;
                     }

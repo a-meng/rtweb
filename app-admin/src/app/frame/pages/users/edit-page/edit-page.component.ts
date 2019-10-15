@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UsersService, CreateUserService, UpdateUserService, IUserDocInput } from '../../../services/users.service';
+import { UsersService, CreateUserService, UpdateUserService, IUserDocInput } from '../../../../services/users.service';
 import { pick } from 'lodash';
 
 @Component({
