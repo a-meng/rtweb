@@ -15,7 +15,8 @@ export class CanLoadGuard implements CanLoad {
     ) { }
     canLoad(
         route: Route,
-        segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
+        segments: UrlSegment[]
+    ): Observable<boolean> | Promise<boolean> | boolean {
         console.info('can-load.guard->canLoad');
         return this.sessServ.fetch()
             .pipe(
