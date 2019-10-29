@@ -15,7 +15,7 @@ export interface IUserDocInput {
 }
 
 @Injectable({ providedIn: 'root' })
-export class UsersService extends Query<{ rtWebUsers: IUser[] }> {
+export class UsersService extends Query<{ rtWebUsers: IUser[] }, { id?: number }> {
     document = gql(`
         query($id:Int){
             rtWebUsers(id:$id) {
@@ -55,6 +55,14 @@ export class UpdateUserService extends Mutation<{ affectedRows: number, message:
     `);
 }
 
+@Injectable({ providedIn: 'root' })
+export class UpdateUserRolesService extends Mutation<boolean, { id: number, roleIds: number[] }> {
+    document = gql(`
+        mutation  ($id:Int,$roleIds:[Int]){
+            updateUserRoles(id:$id,roleIds:$roleIds)
+        }
+    `);
+}
 @Injectable({ providedIn: 'root' })
 export class DeleteUserService extends Mutation<{ affectedRows: number, message: string }, { id: number }> {
     document = gql(`

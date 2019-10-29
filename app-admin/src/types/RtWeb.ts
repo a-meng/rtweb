@@ -17,3 +17,13 @@ export interface Permission {
     attr: string;
     desc: string;
 }
+
+export interface UserRole extends User {
+    roles: Role[];
+}
+export interface RolePermission extends Role {
+    perms: Permission[];
+}
+export interface UserRolePermission extends User {
+    roles: RolePermission[];
+}

@@ -1,0 +1,10 @@
+<strong>可选角色列表</strong>
+<app-tree [data]='roleList' [tpl]='treeNode'>
+    <ng-template #treeNode let-node='node'>
+        <label class='node-container'>
+            <input type="checkbox" [checked]='defaultSelected.includes(node.id)' [value]='node.id'>
+            {{node.node.name}}
+        </label>
+    </ng-template>
+</app-tree>
+<button (click)='onSave()'>保存</button>

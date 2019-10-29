@@ -14,9 +14,12 @@ export function deleteByRoleId(id: number): Promise<any> {
 }
 export async function updateByUserId(id: number, roleIds: number[]): Promise<any> {
     const res1 = await deleteByUserId(id);
-    const res2 = await query({
-        sql: `insert into rtweb.user_role (user_id,role_id) values ` + roleIds.map(e => `(?,?)`).join(','),
-        values: roleIds.reduce((a, b) => a.concat([id, b]), [])
-    });
-    return [res1, res2];
+    if (roleIds.length > 0) {
+        const res2 = await query({
+            sql: `insert into rtweb.user_role (user_id,role_id) values ` + roleIds.map(e => `(?,?)`).join(','),
+            values: roleIds.reduce((a, b) => a.concat([id, b]), [])
+        });
+        return [res1, res2];
+    }
+    return [res1, null];
 }

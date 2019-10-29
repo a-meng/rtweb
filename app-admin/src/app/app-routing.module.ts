@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './auth/auth.guard';
-import {CanLoadGuard} from './auth/can-load.guard';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 const routes: Routes = [
     {
         path: 'login',
@@ -10,7 +9,8 @@ const routes: Routes = [
     },
     {
         path: '',
-        canLoad: [CanLoadGuard],
+        data: ['/admin'],
+        canLoad: [AuthGuard],
         loadChildren: () => import('./frame/frame.module').then(mod => mod.FrameModule)
     }
 ];

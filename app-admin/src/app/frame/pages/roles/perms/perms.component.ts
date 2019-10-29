@@ -1,44 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IPerm, PermsService } from '../../../../services/permissions.service';
-import { IRole, RolesService } from '../../../../services/roles.service';
+import { PermsService } from '../../../../services/permissions.service';
+import { IRole, RolePermsService, UpdateRolePermsService } from '../../../../services/roles.service';
 import { Subscription } from 'rxjs';
+import { tap, map, switchMap } from 'rxjs/operators';
+import { Permission } from 'src/types/RtWeb';
+
 @Component({
     selector: 'app-perms',
     templateUrl: './perms.component.html',
     styleUrls: ['./perms.component.scss']
 })
-export class PermsComponent implements OnInit {
+export class PermsComponent implements OnInit, OnDestroy {
     roleId = parseInt(this.route.snapshot.params.id, 10);
-    permList: IPerm[] = [];
+    permList: Permission[] = [];
     selected: number[] = [];
     subscription: Subscription = new Subscription();
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private permsServ: PermsService,
-        private rolesServ: RolesService
+        private rolePermsServ: RolePermsService,
+        private updateRolePermsServ: UpdateRolePermsService
     ) {
-        const id = this.roleId;
+        const id = this.roleId; // 当前要编辑的角色
+        // 可选权限列表
+        this.subscription.add(
+            // 获取角色详情
+            this.rolePermsServ.fetch({ id })
+                .pipe(
+                    map(res => res.data.rtWebRoles[0]),
+                    tap(role => {
+                        this.selected = role.perms.map(e => e.id);
+                    }),
+                    switchMap(role => this.rolePermsServ.fetch({ id: role.pid })),
+                    map(res => res.data.rtWebRoles[0]),
+                    tap(role => {
+                        this.permList = role.perms;
+                    })
+                )
+                .subscribe()
+        );
 
-        // id=1为系统管理员
-        if (id === 1) {
-            this.subscription.add(
-                this.permsServ.fetch()
-                    .subscribe(res => this.permList = res.data.rtWebPerms)
-            );
-        } else {
-            this.subscription.add(
-                this.permsServ.fetch({ id: this.roleId })
-                    .subscribe(res => this.permList = res.data.rtWebPerms)
-            );
-        }
+
     }
 
     ngOnInit() {
     }
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
     onSave() {
+        this.updateRolePermsServ.mutate({
+            id: this.roleId,
+            permIds: this.selected
+        }).subscribe(res => {
+            if (res.data.updateRolePerms) {
 
+            }
+        });
     }
     onChange(permId: number, checked: boolean) {
         if (checked) {
@@ -65,7 +85,7 @@ export class PermsComponent implements OnInit {
     }
 }
 
-function findParentsId(list: IPerm[], ids: number[]): number[] {
+function findParentsId(list: Permission[], ids: number[]): number[] {
     const has = list.find(e => e.id === ids[0]);
     if (has && has.pid) {
         return findParentsId(list, [has.pid, ...ids]);
@@ -73,7 +93,7 @@ function findParentsId(list: IPerm[], ids: number[]): number[] {
         return ids;
     }
 }
-function findChildrenId(list: IPerm[], ids: number[]): number[] {
+function findChildrenId(list: Permission[], ids: number[]): number[] {
     let children = [];
     ids.forEach(e => {
         const arr = list.filter(ee => ee.pid === e).map(ee => ee.id);

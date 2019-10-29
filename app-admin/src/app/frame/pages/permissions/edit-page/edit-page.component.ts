@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IPerm, IPermDocInput, PermsService, CreatePermService, UpdatePermService } from '../../../../services/permissions.service';
+import { IPermDocInput, PermsService, CreatePermService, UpdatePermService } from '../../../../services/permissions.service';
 import { switchMap } from 'rxjs/operators';
 import { pick } from 'lodash';
 import { Subscription } from 'rxjs';
+import { Permission } from 'src/types/RtWeb';
 
 @Component({
     selector: 'app-edit-page',
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs';
     styleUrls: ['./edit-page.component.scss']
 })
 export class EditPageComponent implements OnInit, OnDestroy {
-    form: IPerm = {
+    form: Permission = {
         id: null,
         pid: null,
         name: '',

@@ -1,9 +1,7 @@
 <header>
     <div style='font-size:24px;'>权限管理系统</div>
-    <ng-container *ngIf='sess'>
-        <a href="/rt">实时</a>
-        <a href="/report">报表</a>
-    </ng-container>
+    <a *ngFor='let item of headerNavList' [attr.href]="item.href">{{item.label}}</a>
+
     <div style='margin-left:auto;' [ngSwitch]="sess">
         <a *ngSwitchCase="null" [routerLink]="[ '/login']">登录</a>
         <ng-container *ngSwitchDefault>
@@ -13,7 +11,11 @@
     </div>
 </header>
 <aside>
-    <app-app-aside-menu></app-app-aside-menu>
+    <ul>
+        <li *ngFor="let item of asideNavList">
+            <a [routerLink]="[ item.path ]" routerLinkActive='active'>{{item.label}}</a>
+        </li>
+    </ul>
 </aside>
 <main>
     <router-outlet></router-outlet>

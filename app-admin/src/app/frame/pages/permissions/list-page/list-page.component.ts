@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IPerm, PermsService, DeletePermService } from '../../../../services//permissions.service';
+import {  PermsService, DeletePermService } from '../../../../services//permissions.service';
 import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { Permission } from 'src/types/RtWeb';
 @Component({
     selector: 'app-list-page',
     templateUrl: './list-page.component.html',
     styleUrls: ['./list-page.component.scss']
 })
 export class ListPageComponent implements OnInit, OnDestroy {
-    permList: IPerm[] = [];
+    permList: Permission[] = [];
     hasEditPerm = true;
     subscription: Subscription = new Subscription();
     constructor(

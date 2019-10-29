@@ -7,9 +7,11 @@ const routes: Routes = [{
         component: ListPageComponent,
     }, {
         path: ':id/edit',
+        data: ['admin/permission/edit'],
         component: EditPageComponent
     }, {
         path: 'create',
+        data: ['admin/permission/edit'],
         component: EditPageComponent
     }];
 

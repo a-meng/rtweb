@@ -14,12 +14,14 @@ export function findById(id: number): Promise<Permission[]> {
 }
 export function findByRoleId(rid: number): Promise<Permission[]> {
     return query({
-        sql: `SELECT p.id,p.name
+        sql: `  SELECT 
+                    p.*
                 FROM
-                    rtweb.role_permission rp,
-                    rtweb.permission p
-                WHERE 
-                    rp.role_id=? and p.id=rp.permission_id`,
+                    (SELECT * FROM rtweb.role_permission WHERE role_id=?)  rp
+                LEFT JOIN
+                    rtweb.permission p 
+                ON 
+                    rp.permission_id = p.id`,
         values: [rid]
     });
 }

@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Query, Mutation } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { Permission } from 'src/types/RtWeb';
 
-export interface IPerm {
-    id: number;
-    pid: number;
-    name: string;
-    value: string;
-    attr: string;
-    desc: string;
-}
+
 export interface IPermDocInput {
     pid: number;
     name: string;
@@ -19,7 +13,7 @@ export interface IPermDocInput {
 }
 
 @Injectable({ providedIn: 'root' })
-export class PermsService extends Query<{ rtWebPerms: IPerm[] }, { id: number }> {
+export class PermsService extends Query<{ rtWebPerms: Permission[] }, { id: number }> {
     document = gql(`
         query($id:Int){
             rtWebPerms(id:$id) {

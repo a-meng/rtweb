@@ -1,40 +1,45 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { CanLoad, Route, UrlSegment, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivate } from '@angular/router';
 import { Observable } from 'rxjs';
 import { StoreService } from '../services/store.service';
-import { map, tap, first } from 'rxjs/operators';
+import { SessService, Sess } from '../services/sess.service';
+import { first, tap, take, map, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { from } from 'zen-observable';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanLoad, CanActivate {
+
     constructor(
         private storeServ: StoreService,
+        private sessServ: SessService,
         private router: Router
-    ) {
-
+    ) { }
+    canLoad(
+        route: Route,
+        segments: UrlSegment[]
+    ): Observable<boolean> | Promise<boolean> | boolean {
+        const path = (route.data || []) as string[];
+        console.info('执行canLoad', path);
+        // 属于还没有加载过用户信息
+        return of(this.storeServ.sessInit).pipe(
+            switchMap(init => !init ? this.storeServ.fetchSess() : of(true)),
+            switchMap(() => this.storeServ.access(path)),
+            tap(res => {
+                if (!res) {
+                    this.router.navigateByUrl('/login');
+                }
+            }),
+            take(1)
+        );
     }
     canActivate(
-        next: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-        console.info('next.url', next.url);
-        console.info('state.url', state.url);
-
-        return this.storeServ.sessSubject
-            .pipe(
-                first(),
-                map(res => {
-                    console.info('auth.guard->canActivate', res);
-                    // 未登录
-                    if (!res) {
-                        this.router.navigateByUrl('/login');
-                        return false;
-                    } else {
-                        // 登录鉴权
-                        return true;
-                    }
-                })
-            );
-
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+        const path = (route.data || []) as string[];
+        console.info('执行canActivate', path);
+        return this.storeServ.access(path);
     }
-
 }

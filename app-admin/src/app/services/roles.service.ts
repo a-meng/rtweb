@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Query, Mutation } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { Role, RolePermission } from 'src/types/RtWeb';
 
 export interface IRole {
     id: number;
@@ -13,7 +14,7 @@ export interface IRoleDocInput {
 }
 
 @Injectable({ providedIn: 'root' })
-export class RolesService extends Query<{ rtWebRoles: IRole[] }, { id?: number }> {
+export class RolesService extends Query<{ rtWebRoles: Role[] }, { id?: number }> {
     document = gql(`
         query($id:Int){
             rtWebRoles(id:$id) {
@@ -63,13 +64,17 @@ export class DeleteRoleService extends Mutation<{ affectedRows: number, message:
 }
 
 @Injectable({ providedIn: 'root' })
-export class RolePermsService extends Query<{ rtWebRoles: IRole[] }, { id?: number }> {
+export class RolePermsService extends Query<{ rtWebRoles: RolePermission[] }, { id?: number }> {
     document = gql(`
         query($id:Int){
             rtWebRoles(id:$id) {
                 id,
+                pid,
+                name,
                 perms{
-                    id
+                    id,
+                    pid,
+                    name
                 }
             }
         }
@@ -77,11 +82,13 @@ export class RolePermsService extends Query<{ rtWebRoles: IRole[] }, { id?: numb
 }
 
 @Injectable({ providedIn: 'root' })
-export class UpdateRolePerms extends Mutation<boolean, { id: number, permIds: number[] }> {
+export class UpdateRolePermsService extends Mutation<{ updateRolePerms: boolean }, { id: number, permIds: number[] }> {
     document = gql(`
         mutation ($id:Int,$permIds:[Int]){
             updateRolePerms(id:$id,permIds:$permIds)
         }
     `);
 }
+
+
 

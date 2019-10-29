@@ -23,6 +23,7 @@ export class SessService extends Query<{ sess: Sess }> {
                     name,
                     perms{
                         id,
+                        pid,
                         name,
                         value,
                         attr,

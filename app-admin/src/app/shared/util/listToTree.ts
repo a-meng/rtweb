@@ -1,3 +1,4 @@
+import { uniq } from 'lodash';
 class ListNode { id: number; pid: number; }
 
 class TreeNode<T extends ListNode>  {
@@ -39,6 +40,14 @@ function isChildTree(parentList: ListNode[], childList: ListNode[]): boolean {
     });
 }
 
+// 寻找根节点 （返回的是根pid）
+function findRootIds<T extends ListNode>(list: T[]): number[] {
+    const pids = uniq(list.map(e => e.pid));
 
-export { listToTree, isChildTree, ListNode, TreeNode };
+    const ids = list.map(e => e.id);
+    // pid 在ids中不存在 的那个node就是根节点
+    return  pids.filter(e => !ids.includes(e));
+}
+
+export { listToTree, isChildTree, ListNode, TreeNode, findRootIds };
 

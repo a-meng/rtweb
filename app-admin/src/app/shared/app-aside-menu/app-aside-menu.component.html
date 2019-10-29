@@ -1,5 +1,5 @@
 <ul>
     <li *ngFor="let m of menus">
-        <a [routerLink]="[ '/'+m.path ]" routerLinkActive='active'>{{m.label}}</a>
+        <a [routerLink]="[ m.path ]" routerLinkActive='active'>{{m.label}}</a>
     </li>
 </ul>

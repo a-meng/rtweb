@@ -7,10 +7,11 @@ import { SharedModule } from '../../../shared/shared.module'
 import { UsersRoutingModule } from './users-routing.module';
 import { ListPageComponent } from './list-page/list-page.component';
 import { EditPageComponent } from './edit-page/edit-page.component';
+import { RoleComponent } from './role/role.component';
 
 
 @NgModule({
-    declarations: [ListPageComponent, EditPageComponent],
+    declarations: [ListPageComponent, EditPageComponent, RoleComponent],
     imports: [
         CommonModule,
         FormsModule,

@@ -11,12 +11,15 @@ const routes: Routes = [
         component: ListPageComponent
     }, {
         path: 'create',
+        data: ['admin/role/edit'],
         component: EditPageComponent
     }, {
         path: ':id/edit',
+        data: ['admin/role/edit'],
         component: EditPageComponent
     }, {
         path: ':id/perms',
+        data: ['admin/role/edit'],
         component: PermsComponent
     }
 ];
