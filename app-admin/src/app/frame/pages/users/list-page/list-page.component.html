@@ -1,4 +1,4 @@
-<button style='margin-bottom:10px;' [routerLink]="[ 'create']">添加用户</button>
+<button style='margin-bottom:10px;' *ngIf='canEdit' [routerLink]="[ 'create']" >添加用户</button>
 <table>
     <thead>
         <tr>
@@ -6,7 +6,7 @@
             <th>name</th>
             <th>email</th>
             <th>role</th>
-            <th>操作</th>
+            <th *ngIf='canEdit'>操作</th>
         </tr>
     </thead>
     <tbody>
@@ -16,9 +16,9 @@
             <td>{{u.email}}</td>
             <td>
                 <span *ngFor='let r of u.roles' style='background:rgba(0,0,0,.1);padding:1px 4px;font-size:12px;'>{{r.name}}</span>
-                <a [routerLink]="[u.id+'/role']">修改</a>
+                <a *ngIf='canEdit' [routerLink]="[u.id+'/role']">修改</a>
             </td>
-            <td>
+            <td *ngIf='canEdit'>
                 <ng-container>
                     &nbsp;
                     <button [routerLink]="[u.id+'/edit']">编辑</button>

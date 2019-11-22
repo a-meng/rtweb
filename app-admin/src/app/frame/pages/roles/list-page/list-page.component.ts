@@ -1,35 +1,33 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IRole, RolesService, DeleteRoleService } from '../../../../services/roles.service';
-import { Sess, SessService } from '../../../../services/sess.service';
+import { StoreService } from 'src/app/services/store.service';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, first } from 'rxjs/operators';
 @Component({
     selector: 'app-list-page',
     templateUrl: './list-page.component.html',
     styleUrls: ['./list-page.component.scss']
 })
-export class ListPageComponent implements OnInit, OnDestroy {
+export class ListPageComponent implements OnInit {
     roleList: IRole[] = [];
-    hasEditPerm = true;
-    sub: Subscription = new Subscription();
+    canEdit = false;
     constructor(
         private rolesServ: RolesService,
-        private sessServ: SessService,
-        private deleteRoleServ: DeleteRoleService
+        private deleteRoleServ: DeleteRoleService,
+        private storeServ: StoreService
     ) {
-        this.rolesServ.fetch().subscribe(res => this.roleList = res.data.rtWebRoles);
+        this.updateRoleList();
+        this.storeServ.access(['/admin/role/edit']).pipe(
+            first()
+        ).subscribe(res => this.canEdit = res);
     }
 
     ngOnInit() {
     }
     onDeleteById(id: number) {
-        this.deleteRoleServ.mutate({ id })
-            .pipe(
-                switchMap(() => this.rolesServ.watch().refetch())
-            )
-            .subscribe(res => this.roleList = res.data.rtWebRoles);
+        this.deleteRoleServ.mutate({ id }).subscribe(() => this.updateRoleList());
     }
-    ngOnDestroy(): void {
-        this.sub.unsubscribe();
+    updateRoleList() {
+        this.rolesServ.fetch().subscribe(res => this.roleList = res.data.rtWebRoles);
     }
 }

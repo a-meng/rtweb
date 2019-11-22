@@ -18,13 +18,15 @@ export class StoreService {
     access(path: string[]): Observable<boolean> {
         return this.sessSubject.pipe(
             map(sess => {
+                // const start = Date.now();
+                let arr: string[] = [];
                 if (sess) {
-                    return uniq<string>([].concat(
+                    arr = uniq<string>([].concat(
                         ...sess.roles.map(e => pathList(e.perms))
                     ));
-                } else {
-                    return [];
                 }
+                //  console.info('权限解析access函数耗时：', Date.now() - start);
+                return arr;
             }),
             map(arr => {
                 const result = path.every(p => arr.includes(p));
@@ -50,9 +52,9 @@ function pathList<T extends Node>(t: T[]): string[] {
     // 记录数据
     const arr = [];
     // 遍历
-    pids.forEach(pid => getPath(pid, ''));
+    pids.forEach(pid => getPath(pid));
     return arr;
-    function getPath(pid: number, prefix: string): void {
+    function getPath(pid: number, prefix = ''): void {
         t.filter(e => e.pid === pid).forEach(has => {
             const path = prefix + '/' + has.value;
             arr.push(path);

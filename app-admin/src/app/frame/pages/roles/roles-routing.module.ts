@@ -5,21 +5,25 @@ import { Routes, RouterModule } from '@angular/router';
 import { ListPageComponent } from './list-page/list-page.component';
 import { EditPageComponent } from './edit-page/edit-page.component';
 import { PermsComponent } from './perms/perms.component';
+import { AuthGuard } from 'src/app/auth/auth.guard';
 const routes: Routes = [
     {
         path: '',
         component: ListPageComponent
     }, {
         path: 'create',
-        data: ['admin/role/edit'],
+        data: { auth: ['/admin/role/edit'] },
+        canActivate: [AuthGuard],
         component: EditPageComponent
     }, {
         path: ':id/edit',
-        data: ['admin/role/edit'],
+        data: { auth: ['/admin/role/edit'] },
+        canActivate: [AuthGuard],
         component: EditPageComponent
     }, {
         path: ':id/perms',
-        data: ['admin/role/edit'],
+        data: { auth: ['/admin/role/edit'] },
+        canActivate: [AuthGuard],
         component: PermsComponent
     }
 ];

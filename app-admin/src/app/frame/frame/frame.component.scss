@@ -25,13 +25,14 @@ header {
 aside {
     border: 1px solid #ddd;
     margin: 10px;
-    padding: 0 20px;
+    padding: 20px;
     min-width: 180px;
 
     a {
         text-decoration: none;
         display: block;
-        padding: 5px;
+        padding: 8px 15px;
+        margin-bottom:5px;
     }
 
     a:hover {

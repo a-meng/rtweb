@@ -12,17 +12,19 @@ const routes: Routes = [
             { path: '', component: WelcomeComponent },
             {
                 path: 'permissions',
-                data: ['/admin/permission'],
+                data: { auth: ['/admin/permission'] },
                 canLoad: [AuthGuard],
                 loadChildren: () => import('./pages/permissions/permissions.module').then(mod => mod.PermissionsModule)
             },
             {
                 path: 'users',
-                data: ['/admin/user'],
+                data: { auth: ['/admin/user'] },
+                canLoad: [AuthGuard],
                 loadChildren: () => import('./pages/users/users.module').then(mod => mod.UsersModule)
             }, {
                 path: 'roles',
-                data: ['/admin/role'],
+                data: { auth: ['/admin/role'] },
+                canLoad: [AuthGuard],
                 loadChildren: () => import('./pages/roles/roles.module').then(mod => mod.RolesModule)
             },
             { path: '**', component: Page404Component }

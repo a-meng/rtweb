@@ -9,7 +9,7 @@ const routes: Routes = [
     },
     {
         path: '',
-        data: ['/admin'],
+        data: { auth: ['/admin'] },
         canLoad: [AuthGuard],
         loadChildren: () => import('./frame/frame.module').then(mod => mod.FrameModule)
     }

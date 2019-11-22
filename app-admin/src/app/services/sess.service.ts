@@ -48,6 +48,7 @@ export class LoginService extends Mutation<{ login: Sess }, { email: string, pwd
                     name,
                     perms{
                         id,
+                        pid,
                         name,
                         value,
                         attr,
