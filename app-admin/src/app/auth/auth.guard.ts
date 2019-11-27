@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
-import { CanLoad, Route, UrlSegment, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivate, CanActivateChild } from '@angular/router';
+import {
+    CanLoad, Route, UrlSegment,
+    ActivatedRouteSnapshot, RouterStateSnapshot,
+    UrlTree, Router, CanActivate, CanActivateChild
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { StoreService } from '../services/store.service';
-import { SessService, Sess } from '../services/sess.service';
-import { first, tap, take, map, switchMap } from 'rxjs/operators';
+import { SessService } from '../services/sess.service';
+import { first, tap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import * as NProgress from 'nprogress';
 @Injectable({
     providedIn: 'root'
 })
 export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
-
 
     constructor(
         private storeServ: StoreService,
@@ -24,14 +28,16 @@ export class AuthGuard implements CanLoad, CanActivate, CanActivateChild {
         console.info('执行canLoad', path);
         // 属于还没有加载过用户信息
         return of(this.storeServ.sessInit).pipe(
+            tap(() => NProgress.start()),
             switchMap(init => !init ? this.storeServ.fetchSess() : of(true)),
             switchMap(() => this.storeServ.access(path)),
             tap(res => {
+                NProgress.done();
                 if (!res) {
                     this.router.navigateByUrl('/login');
                 }
             }),
-            take(1)
+            first()
         );
     }
     canActivate(

@@ -5,8 +5,8 @@ export function findAll(): Promise<Role[]> {
         sql: 'select * from rtweb.role '
     });
 }
-export async function findById(id: number | string): Promise<Role[]> {
-    return await query({
+export function findById(id: number | string): Promise<Role[]> {
+    return query({
         sql: 'select * from rtweb.role where id=? ',
         values: [id]
     });

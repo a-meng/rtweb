@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../services/sess.service';
 import { Router } from '@angular/router';
-import { StoreService } from '../services/store.service'
+import { StoreService } from '../services/store.service';
+import * as NGprogress from 'nprogress';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -21,14 +22,15 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
     }
     onSubmit() {
-        this.loginServ.mutate(
-            this.form
-        ).subscribe(res => {
+        NGprogress.start();
+        this.loginServ.mutate(this.form).subscribe(res => {
             if (res.data.login) {
                 this.stroeServ.sessSubject.next(res.data.login);
                 this.router.navigate(['']);
+            } else {
+                alert(res.errors[0].message);
             }
+            NGprogress.done();
         });
     }
-
 }

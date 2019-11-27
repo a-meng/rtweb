@@ -6,16 +6,20 @@ import { Subscription, combineLatest } from 'rxjs';
 import findCids from '../../../../shared/util/findCids';
 import { ActivatedRoute } from '@angular/router';
 import { map, tap, take } from 'rxjs/operators';
-import { UsersService, UpdateUserRolesService } from 'src/app/services/users.service';
+import { UsersService, UpdateUserRolesService, IUser } from 'src/app/services/users.service';
+import { Sess } from 'src/app/services/sess.service';
 @Component({
     selector: 'app-role',
     templateUrl: './role.component.html',
     styleUrls: ['./role.component.scss']
 })
 export class RoleComponent implements OnInit, OnDestroy {
+    userId = parseInt(this.route.snapshot.params.id, 10);
+    fullRoleList: Role[] = [];
+    // 父角色状态
+    sess: Sess = null;
 
-    roleList: Role[] = [];      // 可选角色列表
-    defaultSelected: number[] = [];    // 已选角色列表
+    selectedRoleIds: number[] = [];    // 已选角色列表
     sub: Subscription = new Subscription();
 
     constructor(
@@ -33,50 +37,32 @@ export class RoleComponent implements OnInit, OnDestroy {
         ]).pipe(
             take(1),
             tap(([sess, res]) => {
-                const roles = res.data.rtWebRoles;
-                const roleIds = sess.roles.map(e => e.id);
-                console.info('所有角色列表', roles);
-                if (roleIds.includes(1)) {
-                    this.roleList = roles;
-                } else {
-                    const ids = findCids(roles, roleIds);
-                    console.info('findCids', ids);
-                    this.roleList = roles.filter(e => ids.includes(e.id)).map(e => {
-                        return {
-                            id: e.id,
-                            pid: e.pid,
-                            name: e.name
-                        }
-                    });
-                }
+                this.fullRoleList = res.data.rtWebRoles;
+                this.sess = sess;
             })
         ).subscribe();
 
+
         // 获取默认选中
-        const userId = parseInt(this.route.snapshot.params.id, 10);
-        this.usersServ.fetch({ id: userId }).pipe(
+        this.usersServ.fetch({ id: this.userId }).pipe(
             take(1),
             map(res => res.data.rtWebUsers[0])
         ).subscribe(user => {
             if (user) {
-                this.defaultSelected = user.roles.map(e => e.id);
+                this.selectedRoleIds = user.roles.map(e => e.id);
             }
         });
+
 
     }
 
     onSave() {
-        const root = this.el.nativeElement as HTMLElement;
-        const checkedNodes = Array.from(root.querySelectorAll<HTMLInputElement>('input:checked'));
-        const roleIds = checkedNodes.map(e => parseInt(e.value, 10));
-        const userId = parseInt(this.route.snapshot.params.id, 10);
-        console.info(roleIds);
         this.updateUserRolesServ.mutate({
-            id: userId, roleIds
+            id: this.userId,
+            roleIds: this.selectedRoleIds
         }).subscribe(res => {
             console.info(res.data);
         });
-
     }
 
 
@@ -86,4 +72,20 @@ export class RoleComponent implements OnInit, OnDestroy {
         this.sub.unsubscribe();
     }
 
+    getChildrenRoles(parentRoleId: number): Role[] {
+        const arr = this.fullRoleList;
+        const cids = findCids(arr, [parentRoleId]);
+        return arr.filter(e => cids.includes(e.id) && e.id !== parentRoleId);
+    }
+    onCheckboxChange(roleId: number, checked: boolean) {
+        const { selectedRoleIds } = this;
+        if (checked) {
+            if (!selectedRoleIds.includes(roleId)) {
+                selectedRoleIds.push(roleId);
+            }
+
+        } else {
+            this.selectedRoleIds = selectedRoleIds.filter(id => id !== roleId);
+        }
+    }
 }

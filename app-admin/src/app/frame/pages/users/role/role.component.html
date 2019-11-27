@@ -1,10 +1,20 @@
-<strong>可选角色列表</strong>
-<app-tree [data]='roleList' [tpl]='treeNode'>
-    <ng-template #treeNode let-node='node'>
-        <label class='node-container'>
-            <input type="checkbox" [checked]='defaultSelected.includes(node.id)' [value]='node.id'>
-            {{node.node.name}}
-        </label>
-    </ng-template>
-</app-tree>
+<div style='margin-bottom:20px;'>
+    <small>只能给别人分别配下一层的角色</small>
+</div>
+<details *ngFor="let role of sess?.roles" open>
+    <summary>{{role.name}}</summary>
+    <app-tree [data]='getChildrenRoles(role.id)' [tpl]='treeNode'>
+        <ng-template #treeNode let-node='node'>
+            <label class='node-container'>
+                <input type="checkbox"
+
+                       [checked]='selectedRoleIds.includes(node.id)'
+                       [value]='node.id'
+                       (change)='onCheckboxChange(node.id,$event.target.checked)'>
+                {{node.node.name}}
+            </label>
+        </ng-template>
+    </app-tree>
+</details>
+
 <button (click)='onSave()'>保存</button>

@@ -1,4 +1,4 @@
-<button style='margin-bottom:10px;' *ngIf='canEdit' [routerLink]="[ 'create']" >添加用户</button>
+<button style='margin-bottom:10px;' *ngIf='canEdit' [routerLink]="[ 'create']">添加用户</button>
 <table>
     <thead>
         <tr>
@@ -15,11 +15,11 @@
             <td>{{u.name}}</td>
             <td>{{u.email}}</td>
             <td>
-                <span *ngFor='let r of u.roles' style='background:rgba(0,0,0,.1);padding:1px 4px;font-size:12px;'>{{r.name}}</span>
-                <a *ngIf='canEdit' [routerLink]="[u.id+'/role']">修改</a>
+                <span class='role-name' *ngFor='let r of u.roles'>{{r.name}}</span>
+                <a *ngIf='canEdit && isChildrenRole(u)' [routerLink]="[u.id+'/role']">修改</a>
             </td>
-            <td *ngIf='canEdit'>
-                <ng-container>
+            <td>
+                <ng-container *ngIf='canEdit && isChildrenRole(u)'>
                     &nbsp;
                     <button [routerLink]="[u.id+'/edit']">编辑</button>
                     &nbsp;

@@ -5,7 +5,7 @@ let pool: mysql.Pool = null;
 export function createPool(): mysql.Pool {
     pool = mysql.createPool({
         connectionLimit: 10,
-        host: '10.10.121.120',
+        host: '10.10.130.220',
         user: 'rt_admin',
         password: 'i6zeg6nS32uov4csVHdW5iJk7ScErvgD',
         port: 3306

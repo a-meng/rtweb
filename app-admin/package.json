@@ -28,6 +28,7 @@
     "graphql-tag": "^2.10.0",
     "lodash": "^4.17.15",
     "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
     "rxjs": "~6.5.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
@@ -41,6 +42,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/lodash": "^4.14.141",
     "@types/node": "~8.9.4",
+    "@types/nprogress": "^0.2.0",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",

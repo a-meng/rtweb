@@ -7,7 +7,7 @@ import * as userRoleServ from '../../services/userRole';
 import { Context } from 'koa'
 export default {
     Query: {
-        rtWebUsers: async (app: any, args: { id: number }, ctx: Context): Promise<userServ.User[]> => {
+        rtWebUsers: (app: any, args: { id: number }, ctx: Context): Promise<userServ.User[]> => {
             const id = args.id;
             if (id) {
                 return userServ.findById(id);
@@ -15,7 +15,7 @@ export default {
                 return userServ.findAll();
             }
         },
-        rtWebRoles: async (app: any, args: { id: number }, ctx: Context): Promise<roleServ.Role[]> => {
+        rtWebRoles: (app: any, args: { id: number }, ctx: Context): Promise<roleServ.Role[]> => {
             const id = args.id;
             if (id) {
                 return roleServ.findById(id);
@@ -23,7 +23,7 @@ export default {
                 return roleServ.findAll();
             }
         },
-        rtWebPerms: async (app: any, args: { id: number }, ctx: Context): Promise<premServ.Permission[]> => {
+        rtWebPerms: (app: any, args: { id: number }, ctx: Context): Promise<premServ.Permission[]> => {
             const { id } = args;
             if (id) {
                 return premServ.findById(id);

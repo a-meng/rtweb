@@ -13,9 +13,7 @@ export class TreeComponent implements OnInit {
     set data(data: ListNode[]) {
         this._data = data;
         const ids = findRootIds(data);
-        console.info(ids);
         this.treeData = [].concat(...ids.map(id => listToTree(data, id)));
-
     }
     get data() {
         return this._data;

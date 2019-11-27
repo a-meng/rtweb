@@ -1,12 +1,20 @@
-<button [routerLink]="['create']" *ngIf='canEdit'>添加角色</button>
+<select (change)='onSelectRole(selectNode.value);' #selectNode name='role'>
+    <option *ngFor='let role of sess?.roles' [value]='role.id' [selected]='selectedRoleId===role.id'>{{role.name}}</option>
+</select>
+<small style='color:gray;margin-left:5px;'>用户可以有多个角色，每个角色单独配置子角色信息</small>
+
+
+
+
+<!-- <button [routerLink]="['create']" *ngIf='canEdit'>添加角色</button> -->
 <app-tree [data]='roleList' [tpl]='treeNode'>
     <ng-template #treeNode let-node='node'>
         <div class='node-container'>
             <div class='node-name'>{{node.node.name}}</div>
             <div class='node-btns' *ngIf='canEdit'>
-                <a [routerLink]="[ node.id,'edit' ]">编辑</a>
+                <a [routerLink]="[ node.id,'edit' ]" *ngIf='node.id!==selectedRoleId'>编辑</a>
                 <a [routerLink]="[ 'create' ]" [queryParams]='{pid:node.id}'>添加子项</a>
-                <a href='#' (click)='$event.preventDefault();onDeleteById(node.id)'>删除</a>
+                <a href='#' (click)='$event.preventDefault();onDeleteById(node.id)' *ngIf='node.id!==selectedRoleId'>删除</a>
             </div>
         </div>
     </ng-template>
