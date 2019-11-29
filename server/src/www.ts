@@ -6,7 +6,7 @@ import apolloServer from './apolloServer';
 import router from './router/index'
 import path from 'path'
 // 初始化mysql连接
-import { createPool } from './db/mysql'
+import { createPool} from './db/mysql'
 createPool();
 
 const app = new Koa();
@@ -14,7 +14,7 @@ app.keys = ['hello'];
 
 
 app
-    //随机延迟响应
+    //随机延迟响应 （方便发现bug）
     .use(async (ctx, next) => {
         await next();
         await delay(Math.random() * 2 * 1000);
@@ -27,6 +27,7 @@ app
     })
     // 静态文件
     .use(KoaStatic(path.join(__dirname, '../static')))
+
     // session 默认一天过期
     .use(session({
         key: 'rtweb:sess',
@@ -54,5 +55,3 @@ function delay(time: number): Promise<void> {
         }, time)
     })
 }
-
-

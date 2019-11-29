@@ -25,6 +25,20 @@ export function findByRoleId(rid: number): Promise<Permission[]> {
         values: [rid]
     });
 }
+export function findByRoleIds(roleIds: number[]): Promise<(Permission & { role_id: number })[]> {
+    return query({
+        sql: `  SELECT 
+                    p.*,
+                    rp.role_id
+                FROM
+                    (SELECT * FROM rtweb.role_permission WHERE role_id in (?) )  rp
+                LEFT JOIN
+                    rtweb.permission p 
+                ON 
+                    rp.permission_id = p.id`,
+        values: [roleIds]
+    });
+}
 
 export function create(perm: Permission): Promise<any> {
     let obj = pick(perm, ['pid', 'name', 'value', 'attr', 'desc']);

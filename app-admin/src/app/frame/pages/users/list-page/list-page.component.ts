@@ -26,7 +26,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
                 const pids = sess.roles.map(e => e.id);
                 this.childrenRoleId = findCids(roles, pids).filter(id => !pids.includes(id));
             });
-
         });
         this.refreshUserList();
 

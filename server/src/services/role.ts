@@ -11,6 +11,7 @@ export function findById(id: number | string): Promise<Role[]> {
         values: [id]
     });
 }
+
 export function findByUserId(uid: number | string): Promise<Role[]> {
     return query({
         sql: `SELECT r.id,r.name

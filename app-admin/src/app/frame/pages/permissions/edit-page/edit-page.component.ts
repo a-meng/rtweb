@@ -54,18 +54,10 @@ export class EditPageComponent implements OnInit, OnDestroy {
         const form = this.form;
         const doc = pick(form, ['pid', 'name', 'value', 'attr', 'desc']);
         if (!form.id) {
-            this.createPermServ.mutate({ doc })
-                .pipe(
-                    switchMap(() => this.permsServ.watch().refetch())
-                )
-                .subscribe(() => this.router.navigate(['permissions']));
+            this.createPermServ.mutate({ doc }).subscribe(() => this.router.navigate(['permissions']));
 
         } else {
-            this.updatePermServ.mutate({ id: form.id, doc })
-                .pipe(
-                    switchMap(() => this.permsServ.watch().refetch())
-                )
-                .subscribe(() => this.router.navigate(['permissions']));
+            this.updatePermServ.mutate({ id: form.id, doc }).subscribe(() => this.router.navigate(['permissions']));
         }
     }
     ngOnDestroy() {

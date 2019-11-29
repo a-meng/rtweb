@@ -45,17 +45,9 @@ export class EditPageComponent implements OnInit {
     onSubmit() {
         const { id, pid, name } = this.form;
         if (!id) {
-            this.createRoleServ.mutate({ doc: { pid, name } })
-                .pipe(
-                    switchMap(() => this.rolesServ.watch().refetch())
-                )
-                .subscribe(() => this.toListPage());
+            this.createRoleServ.mutate({ doc: { pid, name } }).subscribe(() => this.toListPage());
         } else {
-            this.updateRoleServ.mutate({ id, doc: { pid, name } })
-                .pipe(
-                    switchMap(() => this.rolesServ.watch().refetch())
-                )
-                .subscribe(() => this.toListPage());
+            this.updateRoleServ.mutate({ id, doc: { pid, name } }).subscribe(() => this.toListPage());
         }
 
     }

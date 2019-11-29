@@ -18,14 +18,12 @@ export class StoreService {
     access(path: string[]): Observable<boolean> {
         return this.sessSubject.pipe(
             map(sess => {
-                // const start = Date.now();
                 let arr: string[] = [];
                 if (sess) {
                     arr = uniq<string>([].concat(
                         ...sess.roles.map(e => pathList(e.perms))
                     ));
                 }
-                //  console.info('权限解析access函数耗时：', Date.now() - start);
                 return arr;
             }),
             map(arr => {
@@ -38,8 +36,7 @@ export class StoreService {
     fetchSess(): Observable<Sess> {
         return this.sessServ.fetch().pipe(
             map(res => res.data.sess),
-            tap(sess => this.sessSubject.next(sess)),
-            take(1),
+            tap(sess => this.sessSubject.next(sess))
         );
     }
 }
@@ -50,7 +47,7 @@ function pathList<T extends Node>(t: T[]): string[] {
     const ids = t.map(e => e.id);
     const pids = uniq(t.map(e => e.pid)).filter(e => !ids.includes(e));
     // 记录数据
-    const arr = [];
+    const arr: string[] = [];
     // 遍历
     pids.forEach(pid => getPath(pid));
     return arr;

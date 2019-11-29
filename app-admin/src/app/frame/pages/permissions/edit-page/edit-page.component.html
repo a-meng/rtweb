@@ -1,9 +1,9 @@
 <form (submit)='$event.preventDefault();onSubmit();'>
     <div>
-        id: <strong>{{form.id||'添加'}}</strong>
+        id: <strong>{{form.id||'null'}}</strong>
     </div>
     <div>
-        pid: <strong>{{form.pid}}</strong>
+        pid: <strong>{{form.pid||'null'}}</strong>
     </div>
     <div>
         name: <input type="text" [(ngModel)]="form.name" name='name'>
