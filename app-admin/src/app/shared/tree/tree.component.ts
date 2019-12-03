@@ -9,6 +9,7 @@ export class TreeComponent implements OnInit {
     public treeData: TreeNode<ListNode>[][] = [];
     // tslint:disable-next-line: variable-name
     private _data: ListNode[] = [];
+    closeNodeIds: number[] = [];
     @Input()
     set data(data: ListNode[]) {
         this._data = data;
@@ -24,5 +25,11 @@ export class TreeComponent implements OnInit {
 
     ngOnInit() {
     }
-
+    onSwitch(id: number) {
+        if (this.closeNodeIds.includes(id)) {
+            this.closeNodeIds = this.closeNodeIds.filter(e => e !== id);
+        } else {
+            this.closeNodeIds.push(id);
+        }
+    }
 }
