@@ -48,7 +48,7 @@ export function deleteById(id: number | string): Promise<any> {
     });
 }
 
-export class Role {
+export interface Role {
     id: number;
     pid: number;
     name: string;

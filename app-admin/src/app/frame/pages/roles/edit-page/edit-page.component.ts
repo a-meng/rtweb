@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IRole, RolesService, CreateRoleService, UpdateRoleService } from '../../../../services/roles.service';
+import { RolesService } from 'src/app/graphql/query/roles';
+import { CreateRoleService } from 'src/app/graphql/mutation/createRole';
+import { UpdateRoleService } from 'src/app/graphql/mutation/updateRole';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Role } from 'src/types/RtWeb'
 import { switchMap } from 'rxjs/operators';
 @Component({
     selector: 'app-edit-page',
@@ -8,8 +11,8 @@ import { switchMap } from 'rxjs/operators';
     styleUrls: ['./edit-page.component.scss']
 })
 export class EditPageComponent implements OnInit {
-    form: IRole = {
-        id: null,
+    form: Role = {
+        id: 0,
         pid: null,
         name: ''
     };

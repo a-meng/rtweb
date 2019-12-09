@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IRole, RolesService, DeleteRoleService } from '../../../../services/roles.service';
-import { StoreService } from 'src/app/services/store.service';
+import { RolesService } from 'src/app/graphql/query/roles';
+import { DeleteRoleService } from 'src/app/graphql/mutation/deleteRole';
+import { SessService } from 'src/app/services/sess.service';
 import { Subscription } from 'rxjs';
 import { switchMap, first } from 'rxjs/operators';
-import { Sess } from 'src/app/services/sess.service';
+import { Role, UserRolePerm } from 'src/types/RtWeb'
 import findCids from 'src/app/shared/util/findCids';
 @Component({
     selector: 'app-list-page',
@@ -11,24 +12,25 @@ import findCids from 'src/app/shared/util/findCids';
     styleUrls: ['./list-page.component.scss']
 })
 export class ListPageComponent implements OnInit {
-    selectedRoleId: number = null;
-    fullRoleList: IRole[] = [];
-    roleList: IRole[] = [];
+    selectedRoleId: number | null = null;
+    fullRoleList: Role[] = [];
+    roleList: Role[] = [];
     canEdit = false;
-    sess: Sess = null;
+    sess: UserRolePerm | null = null;
     constructor(
         private rolesServ: RolesService,
         private deleteRoleServ: DeleteRoleService,
-        private storeServ: StoreService
+        private storeServ: SessService
     ) {
-        this.storeServ.access(['/admin/role/edit']).pipe(
-            first()
-        ).subscribe(res => this.canEdit = res);
+        this.canEdit = this.storeServ.access(['/admin/role/edit']);
         this.storeServ.sessSubject.pipe(
             first()
         ).subscribe(sess => {
             this.sess = sess;
-            this.selectedRoleId = sess.roles[0].id;
+            if (sess) {
+                this.selectedRoleId = sess.roles[0].id;
+            }
+
             this.updateFullRoleList();
         });
     }

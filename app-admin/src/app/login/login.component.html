@@ -1,12 +1,11 @@
 <form (submit)='$event.preventDefault();onSubmit()'>
-
-    <div>
-        email:
+    <div class='ctl'>
+        <label>邮箱:</label>
         <input type="text" name="email" [(ngModel)]="form.email">
     </div>
 
-    <div>
-        pwd:
+    <div class='ctl'>
+        <label>密码:</label>
         <input type="text" name="pwd" [(ngModel)]="form.pwd">
     </div>
     <button type='submit'>登 录</button>

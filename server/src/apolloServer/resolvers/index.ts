@@ -27,13 +27,14 @@ export default {
         rtWebPerms: (app: any, args: { id: number }, ctx: Context): Promise<premServ.Permission[]> => {
             const { id } = args;
             if (id) {
-                return premServ.findById(id);
+               // ctx.throw(500, '只能查全部');
+                  return premServ.findById(id);
             } else {
                 return premServ.findAll();
             }
         },
-        sess: async (app: any, args: any, ctx: Context): Promise<userServ.User> => {
-            let userId = ctx.session.id;
+        sess: async (app: any, args: any, ctx: Context): Promise<userServ.User | null> => {
+            let userId = ctx.session?.id;
             if (userId) {
                 let [user] = await userServ.findById(userId);
                 return user || null;
@@ -50,7 +51,7 @@ export default {
             };
         },
         updateUser: async (app: any, params: { id: number, doc: userServ.User }, ctx: Context): Promise<{ affectedRows: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/user/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/user/edit']);
             if (!authState) throw ('权限不足');
             const res = await userServ.updateById(params.id, params.doc);
             return {
@@ -59,7 +60,7 @@ export default {
             };
         },
         deleteUser: async (app: any, params: { id: number }, ctx: Context): Promise<{ affectedRows: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/user/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/user/edit']);
             if (!authState) throw ('权限不足');
             const res = await userServ.deleteById(params.id);
             return {
@@ -69,7 +70,7 @@ export default {
         },
 
         createRole: async (app: any, params: { doc: roleServ.Role }, ctx: Context): Promise<{ insertId: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/role/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/role/edit']);
             if (!authState) throw ('权限不足');
             const res = await roleServ.create(params.doc);
             return {
@@ -78,7 +79,7 @@ export default {
             };
         },
         updateRole: async (app: any, params: { id: number, doc: roleServ.Role }, ctx: Context): Promise<{ affectedRows: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/role/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/role/edit']);
             if (!authState) throw ('权限不足');
             const res = await roleServ.updateById(params.id, params.doc);
             return {
@@ -87,7 +88,7 @@ export default {
             };
         },
         deleteRole: async (app: any, params: { id: number }, ctx: Context): Promise<{ affectedRows: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/role/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/role/edit']);
             if (!authState) throw ('权限不足');
             const res = await roleServ.deleteById(params.id);
             await rolePermServ.deleteByRoleId(params.id); //附带删除role_permission 关联关系
@@ -97,43 +98,33 @@ export default {
             };
         },
 
-        createPerm: async (app: any, params: { doc: premServ.Permission }, ctx: Context): Promise<{ insertId: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/permission/edit']);
+        createPerm: async (app: any, params: { doc: premServ.Permission }, ctx: Context): Promise<boolean> => {
+            let authState = await authByUserId(ctx.session?.id, ['admin/permission/edit']);
             if (!authState) throw ('权限不足');
-            const res = await premServ.create(params.doc);
-            return {
-                insertId: res.insertId,
-                message: res.message
-            };
+            await premServ.create(params.doc);
+            return true;
         },
-        updatePerm: async (app: any, params: { id: number, doc: premServ.Permission }, ctx: Context): Promise<{ affectedRows: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/permission/edit']);
+        updatePerm: async (app: any, params: { id: number, doc: premServ.Permission }, ctx: Context): Promise<boolean> => {
+            let authState = await authByUserId(ctx.session?.id, ['admin/permission/edit']);
             if (!authState) throw ('权限不足');
-            const res = await premServ.updateById(params.id, params.doc);
-            return {
-                affectedRows: res.affectedRows,
-                message: res.message
-            };
+            await premServ.updateById(params.id, params.doc);
+            return true
         },
-        deletePerm: async (app: any, params: { id: number }, ctx: Context): Promise<{ affectedRows: number, message: string }> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/permission/edit']);
+        deletePerm: async (app: any, params: { id: number }, ctx: Context): Promise<boolean> => {
+            let authState = await authByUserId(ctx.session?.id, ['admin/permission/edit']);
             if (!authState) throw ('权限不足');
-            const res = await premServ.deleteById(params.id);
-            await rolePermServ.deleteByPermId(params.id); //附带删除role_permission 关联关系
-            return {
-                affectedRows: res.affectedRows,
-                message: res.message
-            };
+            await premServ.deleteById(params.id);
+            return true;
         },
 
         updateUserRoles: async (app: any, params: { id: number, roleIds: number[] }, ctx: Context): Promise<boolean> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/user/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/user/edit']);
             if (!authState) throw ('权限不足');
             await userRoleServ.updateByUserId(params.id, params.roleIds);
             return true;
         },
         updateRolePerms: async (app: any, params: { id: number, permIds: number[] }, ctx: Context): Promise<boolean> => {
-            let authState = await authByUserId(ctx.session.id, ['admin/role/edit']);
+            let authState = await authByUserId(ctx.session?.id, ['admin/role/edit']);
             if (!authState) throw ('权限不足');
             await rolePermServ.updateByRoleId(params.id, params.permIds);
             return true;
@@ -144,7 +135,11 @@ export default {
             let [user] = await userServ.findByEmail(email);
             console.info(user);
             if (user && user.pwd === pwd) {
-                ctx.session.id = user.id; //更新登录信息
+                if (ctx.session) {
+                    ctx.session.id = user.id; //更新登录信息
+                } else {
+                    ctx.throw('登录信息保存失败', 500);
+                }
                 return user;
             } else {
                 throw new UserInputError('用户名或密码错误');
@@ -165,7 +160,7 @@ export default {
             if (role.id === 1) {
                 return premServ.findAll();
             } else {
-                return premServ.findByRoleId(role.id)
+                return premServ.findByRoleIds([role.id])
             }
 
         }

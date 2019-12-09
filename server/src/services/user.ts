@@ -43,13 +43,13 @@ export function deleteById(id: number | string): Promise<any> {
     });
 }
 
-export class User {
+export interface User {
     id: number;
     name: string;
     email: string;
     pwd: string;
 }
-export class UserDoc {
+export interface UserDoc {
     name: string;
     email: string;
     pwd: string;

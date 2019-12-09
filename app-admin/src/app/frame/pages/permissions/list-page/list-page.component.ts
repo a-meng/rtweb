@@ -1,30 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PermsService, DeletePermService } from '../../../../services//permissions.service';
-import { switchMap, first } from 'rxjs/operators';
-import { Permission } from 'src/types/RtWeb';
-import { StoreService } from 'src/app/services/store.service';
-import findCids from 'src/app/shared/util/findCids';
+import { Component, OnInit, } from '@angular/core';
+import { DeletePermService } from 'src/app/graphql/mutation/deletePerm';
+import { PermsService } from 'src/app/graphql/query/perms';
+import { first } from 'rxjs/operators';
+import { Perm } from 'src/types/RtWeb';
+import { SessService } from 'src/app/services/sess.service';
 @Component({
     selector: 'app-list-page',
     templateUrl: './list-page.component.html',
     styleUrls: ['./list-page.component.scss']
 })
 export class ListPageComponent implements OnInit {
-    permList: Permission[] = [];
-    filteredPermList: Permission[] = [];
+    permList: Perm[] = [];
     canEdit = false;
     constructor(
         private permsServ: PermsService,
         private deletePermServ: DeletePermService,
-        private storeServ: StoreService
+        private storeServ: SessService
     ) {
         this.updatePermList();
-        this.storeServ.access(['/admin/permission/edit']).pipe(
-            first()
-        ).subscribe(res => this.canEdit = res);
+        this.canEdit = this.storeServ.access(['/admin/permission/edit']);
     }
 
-    public onDeleteById(perm: Permission) {
+    public onDeleteById(perm: Perm) {
         if (window.confirm(`确定要删除 (${perm.id}:${perm.name}) 吗？`)) {
             this.deletePermServ.mutate({ id: perm.id }).subscribe(res => {
                 this.updatePermList();
@@ -36,13 +33,6 @@ export class ListPageComponent implements OnInit {
     updatePermList() {
         this.permsServ.fetch().subscribe(res => {
             this.permList = res.data.rtWebPerms;
-            this.onFilterPermList(null);
         });
-    }
-    onFilterPermList(str: string) {
-        const { permList } = this;
-        const id = parseInt(str, 10) || null;
-        const ids = findCids(permList, [id]);
-        this.filteredPermList = permList.filter(e => ids.includes(e.id));
     }
 }

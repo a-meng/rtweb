@@ -7,26 +7,33 @@ import { AuthGuard } from 'src/app/auth/auth.guard';
 const routes: Routes = [
     {
         path: '',
+        data: { auth: ['/admin'] },
         component: FrameComponent,
+        canActivate: [AuthGuard],
         children: [
             { path: '', component: WelcomeComponent },
-            {
-                path: 'permissions',
-                data: { auth: ['/admin/permission'] },
-                canLoad: [AuthGuard],
-                loadChildren: () => import('./pages/permissions/permissions.module').then(mod => mod.PermissionsModule)
-            },
             {
                 path: 'users',
                 data: { auth: ['/admin/user'] },
                 canLoad: [AuthGuard],
+                canActivate: [AuthGuard],
                 loadChildren: () => import('./pages/users/users.module').then(mod => mod.UsersModule)
-            }, {
+            },
+            {
                 path: 'roles',
                 data: { auth: ['/admin/role'] },
                 canLoad: [AuthGuard],
+                canActivate: [AuthGuard],
                 loadChildren: () => import('./pages/roles/roles.module').then(mod => mod.RolesModule)
             },
+            // {
+            //     path: 'permissions',
+            //     data: { auth: ['/admin/permission'] },
+            //     canLoad: [AuthGuard],
+            //     loadChildren: () => import('./pages/permissions/permissions.module').then(mod => mod.PermissionsModule)
+            // },
+            // {
+
             { path: '**', component: Page404Component }
         ]
     }

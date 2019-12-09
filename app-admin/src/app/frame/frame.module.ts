@@ -15,4 +15,4 @@ import { Page404Component } from './pages/page404/page404.component';
         FrameRoutingModule
     ]
 })
-export class FrameModule { }
+export class FrameModule {}

@@ -1,42 +1,51 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UsersService, IUser, DeleteUserService } from '../../../../services/users.service';
-import { StoreService } from 'src/app/services/store.service';
+import { SessService } from 'src/app/services/sess.service';
 import { switchMap, first } from 'rxjs/operators';
-import { RolesService } from 'src/app/services/roles.service';
 import findCids from 'src/app/shared/util/findCids';
+import { UsersService } from 'src/app/graphql/query/users';
+import { RolesService } from 'src/app/graphql/query/roles';
+import { DeleteUserService } from 'src/app/graphql/mutation/deleteUser';
+import { UserRole } from 'src/types/RtWeb';
 @Component({
     selector: 'app-list-page',
     templateUrl: './list-page.component.html',
     styleUrls: ['./list-page.component.scss']
 })
 export class ListPageComponent implements OnInit, OnDestroy {
-    userList: IUser[] = []; // 用户列表
+    sess = this.sessServ.sessSubject.value;  // 当前用户
+    userList: UserRole[] = []; // 用户列表
     canEdit = false;        // 可编辑权限
-    childrenRoleId: number[] = [];  // 子角色id列表
+    childrenRoleId: (number | null)[] = [];  // 子角色id列表
     constructor(
         private usersServ: UsersService,
         private rolesServ: RolesService,
         private deleteUserServ: DeleteUserService,
-        private storeServ: StoreService,
+        private sessServ: SessService,
     ) {
         // 获取角色列表
-        this.rolesServ.fetch().subscribe(res => {
-            const roles = res.data.rtWebRoles;
-            this.storeServ.sessSubject.pipe(first()).subscribe(sess => {
-                const pids = sess.roles.map(e => e.id);
-                this.childrenRoleId = findCids(roles, pids).filter(id => !pids.includes(id));
-            });
+        this.rolesServ.fetch().subscribe({
+            next: res => {
+                const roles = res.data.rtWebRoles;
+                let pids: (number | null)[] = [];
+                if (this.sess) {
+                    pids = this.sess.roles.map(e => e.id);
+                }
+                this.childrenRoleId = findCids(roles, pids).filter(id => {
+                    if (id === null) {
+                        return false;
+                    }
+                    return !pids.includes(id);
+                });
+
+            }
         });
         this.refreshUserList();
-
-        this.storeServ.access(['/admin/user/edit']).pipe(
-            first()
-        ).subscribe(res => this.canEdit = res);
+        this.canEdit = this.sessServ.access(['/admin/user/edit']);
     }
 
     ngOnInit() {
     }
-    isChildrenRole(user: IUser): boolean {
+    isChildrenRole(user: UserRole): boolean {
         return user.roles.every(r => this.childrenRoleId.includes(r.id));
     }
     onDeleteById(id: number) {

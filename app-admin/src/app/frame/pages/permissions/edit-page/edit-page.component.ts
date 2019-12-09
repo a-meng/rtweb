@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IPermDocInput, PermsService, CreatePermService, UpdatePermService } from '../../../../services/permissions.service';
+import { IPermDocInput, CreatePermService } from 'src/app/graphql/mutation/createPerm';
+import { UpdatePermService } from 'src/app/graphql/mutation/updatePerm';
+import { PermsService } from 'src/app/graphql/query/perms';
 import { switchMap } from 'rxjs/operators';
 import { pick } from 'lodash';
 import { Subscription } from 'rxjs';
-import { Permission } from 'src/types/RtWeb';
+import { Perm } from 'src/types/RtWeb';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
     selector: 'app-edit-page',
@@ -12,8 +15,8 @@ import { Permission } from 'src/types/RtWeb';
     styleUrls: ['./edit-page.component.scss']
 })
 export class EditPageComponent implements OnInit, OnDestroy {
-    form: Permission = {
-        id: null,
+    form: Perm = {
+        id: 0,
         pid: null,
         name: '',
         value: '',
@@ -26,7 +29,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private permsServ: PermsService,
         private createPermServ: CreatePermService,
-        private updatePermServ: UpdatePermService
+        private updatePermServ: UpdatePermService,
+        private msgServ: MessageService,
     ) {
         let id = this.route.snapshot.params.id;
         let pid = this.route.snapshot.queryParams.pid;
@@ -37,14 +41,28 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }
 
         if (id) {
-            this.subscription.add(
-                this.permsServ.fetch({ id }).subscribe(res => {
-                    const perm = res.data.rtWebPerms[0];
-                    if (perm) {
-                        this.form = perm;
+            this.permsServ.fetch({ id }).subscribe({
+                next: res => {
+                    console.info(res);
+                    if (res.data.rtWebPerms) {
+                        const perm = res.data.rtWebPerms[0];
+                        if (perm) {
+                            this.form = perm;
+                        }
+                    } else if (res.errors) {
+                        this.msgServ.add({
+                            type: 'error',
+                            content: res.errors[0].message
+                        });
                     }
-                })
-            );
+                },
+                error: err => {
+                    this.msgServ.add({
+                        type: 'error',
+                        content: err
+                    });
+                },
+            });
         }
     }
 

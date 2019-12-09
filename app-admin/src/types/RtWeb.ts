@@ -7,12 +7,12 @@ export interface User {
 
 export interface Role {
     id: number;
-    pid: number;
+    pid: number | null;
     name: string;
 }
-export interface Permission {
+export interface Perm {
     id: number;
-    pid: number;
+    pid: number | null;
     name: string;
     value: string;
     attr: string;
@@ -22,9 +22,9 @@ export interface Permission {
 export interface UserRole extends User {
     roles: Role[];
 }
-export interface RolePermission extends Role {
-    perms: Permission[];
+export interface RolePerm extends Role {
+    perms: Perm[];
 }
-export interface UserRolePermission extends User {
-    roles: RolePermission[];
+export interface UserRolePerm extends User {
+    roles: RolePerm[];
 }

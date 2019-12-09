@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PermsService } from '../../../../services/permissions.service';
-import { IRole, RolePermsService, UpdateRolePermsService } from '../../../../services/roles.service';
+import {PermsService} from 'src/app/graphql/query/perms';
+import {RolePermsService} from 'src/app/graphql/query/rolePerms'
 import { Subscription } from 'rxjs';
 import { tap, map, switchMap } from 'rxjs/operators';
-import { Permission } from 'src/types/RtWeb';
+import { Perm } from 'src/types/RtWeb';
+import { UpdateRolePermsService } from 'src/app/graphql/mutation/upateRolePerms';
 
 @Component({
     selector: 'app-perms',
@@ -13,7 +14,7 @@ import { Permission } from 'src/types/RtWeb';
 })
 export class PermsComponent implements OnInit, OnDestroy {
     roleId = parseInt(this.route.snapshot.params.id, 10);
-    permList: Permission[] = [];
+    permList: Perm[] = [];
     selected: number[] = [];
     subscription: Subscription = new Subscription();
     constructor(
@@ -55,9 +56,9 @@ export class PermsComponent implements OnInit, OnDestroy {
             id: this.roleId,
             permIds: this.selected
         }).subscribe(res => {
-            if (res.data.updateRolePerms) {
+            // if (res.data?.updateRolePerms) {
 
-            }
+            // }
         });
     }
     onChange(permId: number, checked: boolean) {
@@ -85,7 +86,7 @@ export class PermsComponent implements OnInit, OnDestroy {
     }
 }
 
-function findParentsId(list: Permission[], ids: number[]): number[] {
+function findParentsId(list: Perm[], ids: number[]): number[] {
     const has = list.find(e => e.id === ids[0]);
     if (has && has.pid) {
         return findParentsId(list, [has.pid, ...ids]);
@@ -93,8 +94,8 @@ function findParentsId(list: Permission[], ids: number[]): number[] {
         return ids;
     }
 }
-function findChildrenId(list: Permission[], ids: number[]): number[] {
-    let children = [];
+function findChildrenId(list: Perm[], ids: number[]): number[] {
+    let children: number[] = [];
     ids.forEach(e => {
         const arr = list.filter(ee => ee.pid === e).map(ee => ee.id);
         children = children.concat(arr);

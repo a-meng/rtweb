@@ -1,6 +1,16 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
+
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "alwaysStrict": true,
+
         "baseUrl": "./",
         "outDir": "./dist/out-tsc",
         "sourceMap": true,
@@ -15,7 +25,7 @@
             "node_modules/@types"
         ],
         "lib": [
-            "es2018",
+            "ES2019",
             "dom",
             "esnext.asynciterable"
         ]

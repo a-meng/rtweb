@@ -1,6 +1,6 @@
 import mysql from 'mysql'
 
-let pool: mysql.Pool = null;
+let pool: mysql.Pool | null = null;
 
 export function createPool(): mysql.Pool {
     pool = mysql.createPool({
@@ -15,6 +15,7 @@ export function createPool(): mysql.Pool {
 
 export function query(opt: mysql.QueryOptions): Promise<any> {
     return new Promise((resolve, reject) => {
+        if (!pool) return reject(new Error('未创建pool'));
         pool.query(opt, (err, res) => {
             if (err) {
                 reject(err);

@@ -1,65 +1,52 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Sess, LogoutService } from 'src/app/services/sess.service';
-import { Subscription, combineLatest } from 'rxjs';
-import { StoreService } from 'src/app/services/store.service';
+import { LogoutService } from 'src/app/graphql/mutation/logout';
+import { SessService } from 'src/app/services/sess.service';
 import { Router } from '@angular/router';
-import { map } from 'rxjs/operators';
-
+import { MessageService } from 'src/app/services/message.service';
 @Component({
     selector: 'app-frame',
     templateUrl: './frame.component.html',
     styleUrls: ['./frame.component.scss']
 })
-export class FrameComponent implements OnInit, OnDestroy {
+export class FrameComponent {
 
-    sess: Sess = null;
+    sess = this.sessServ.sessSubject.value;
     headerNavList: HeaderNavItem[] = [];
     asideNavList: AsideNavItem[] = [];
 
-
-    private subscription = new Subscription();
     constructor(
-        private storeServ: StoreService,
+        private sessServ: SessService,
         private logoutServ: LogoutService,
+        private msgServ: MessageService,
         private router: Router
     ) {
 
-        const ob1 = this.storeServ.sessSubject.subscribe(res => this.sess = res)
+        this.headerNavList = [
+            { label: '实时', href: '/rt' },
+            { label: '报表', href: '/report' }
+        ].filter(e => this.sessServ.access([e.href]));
 
-
-        const headerList = [
-            { accessPath: ['/rt'], label: '实时', href: '/rt' },
-            { accessPath: ['/report'], label: '报表', href: '/report' }
-        ];
-        const asideList = [
-            { accessPath: ['/admin/user'], label: '用户管理', path: '/users' },
-            { accessPath: ['/admin/role'], label: '角色管理', path: '/roles' },
-            { accessPath: ['/admin/permission'], label: '权限管理', path: '/permissions' },
-        ];
-
-        const ob2 = combineLatest(headerList.map(e => {
-            return this.storeServ.access(e.accessPath).pipe(
-                map(res => ({ ...e, visible: res }))
-            );
-        })).subscribe(res => this.headerNavList = res.filter(e => e.visible));
-        const ob3 = combineLatest(asideList.map(e => {
-            return this.storeServ.access(e.accessPath).pipe(
-                map(res => ({ ...e, visible: res }))
-            );
-        })).subscribe(res => this.asideNavList = res.filter(e => e.visible));
-
-        [ob1, ob2, ob3].forEach(ob => this.subscription.add(ob));
+        this.asideNavList = [
+            { label: '用户管理', path: '/users', accessKey: '/admin/user' },
+            { label: '角色管理', path: '/roles', accessKey: '/admin/role' },
+            { label: '权限管理', path: '/permissions', accessKey: '/admin/permission' },
+        ].filter(e => this.sessServ.access([`${e.accessKey}`]));
     }
 
-    ngOnInit() {
-    }
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
     onLogout() {
-        this.logoutServ.mutate().subscribe(res => {
-            this.storeServ.sessSubject.next(null);
-            this.router.navigate(['/login']);
+        this.logoutServ.mutate().subscribe({
+            error: err => {
+                this.msgServ.add({
+                    type: 'error',
+                    content: err
+                });
+            },
+            next: (res) => {
+                if (res.data) {
+                    this.sessServ.sessSubject.next(null);
+                    this.router.navigate(['/login']);
+                }
+            }
         });
     }
 }
@@ -71,6 +58,4 @@ interface AsideNavItem {
 interface HeaderNavItem {
     label: string;
     href: string;
-    visible: boolean;
-    accessPath: string[];
 }

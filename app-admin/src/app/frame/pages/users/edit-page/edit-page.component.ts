@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UsersService, CreateUserService, UpdateUserService, IUserDocInput } from '../../../../services/users.service';
 import { pick } from 'lodash';
+import { UsersService } from 'src/app/graphql/query/users';
+import { CreateUserService, IUserDocInput } from 'src/app/graphql/mutation/createUser';
+import { UpdateUserService } from 'src/app/graphql/mutation/upateUser';
 
 @Component({
     selector: 'app-edit-page',
@@ -10,7 +12,7 @@ import { pick } from 'lodash';
 })
 export class EditPageComponent implements OnInit {
     form = {
-        id: null,
+        id: null as number | null,
         name: '',
         email: '',
         pwd: ''
@@ -43,16 +45,18 @@ export class EditPageComponent implements OnInit {
         event.preventDefault();
         const form = this.form;
         const doc: IUserDocInput = pick(this.form, ['name', 'email', 'pwd']);
-        if (!form.id) {
+        if (form.id === null) {
             this.createUserServ.mutate({ doc })
                 .subscribe(() => {
-                    this.usersServ.watch().refetch().then(() => this.toListPage());
+                    this.toListPage();
                 });
 
         } else {
-            this.updateUserServ.mutate({ id: parseInt(form.id, 10), doc })
+            this.updateUserServ.mutate({
+                id: parseInt(form.id + '', 10), doc
+            })
                 .subscribe(() => {
-                    this.usersServ.watch().refetch().then(() => this.toListPage());
+                    this.toListPage();
                 });
         }
     }
@@ -60,4 +64,6 @@ export class EditPageComponent implements OnInit {
         this.router.navigate(['users']);
     }
 }
+
+
 

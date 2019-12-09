@@ -1,13 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewContainerRef, ElementRef } from '@angular/core';
-import { Role } from '../../../../../types/RtWeb';
-import { RolesService } from '../../../../services/roles.service';
-import { StoreService } from '../../../../services/store.service';
+import { Role, UserRolePerm } from '../../../../../types/RtWeb';
+
+import { SessService } from '../../../../services/sess.service';
 import { Subscription, combineLatest } from 'rxjs';
 import findCids from '../../../../shared/util/findCids';
 import { ActivatedRoute } from '@angular/router';
 import { map, tap, take } from 'rxjs/operators';
-import { UsersService, UpdateUserRolesService, IUser } from 'src/app/services/users.service';
-import { Sess } from 'src/app/services/sess.service';
+import { RolesService } from 'src/app/graphql/query/roles';
+import { UsersService } from 'src/app/graphql/query/users';
+import { UpdateUserRolesService } from 'src/app/graphql/mutation/updateUserRoles';
+
+
 @Component({
     selector: 'app-role',
     templateUrl: './role.component.html',
@@ -17,7 +20,7 @@ export class RoleComponent implements OnInit, OnDestroy {
     userId = parseInt(this.route.snapshot.params.id, 10);
     fullRoleList: Role[] = [];
     // 父角色状态
-    sess: Sess = null;
+    sess = this.sessServ.sessSubject.value;
 
     selectedRoleIds: number[] = [];    // 已选角色列表
     sub: Subscription = new Subscription();
@@ -25,35 +28,24 @@ export class RoleComponent implements OnInit, OnDestroy {
     constructor(
         private el: ElementRef,
         private rolesServ: RolesService,
-        private storeServ: StoreService,
+        private sessServ: SessService,
         private usersServ: UsersService,
         private updateUserRolesServ: UpdateUserRolesService,
         private route: ActivatedRoute
     ) {
         // 获取可选角色列表
-        combineLatest([
-            this.storeServ.sessSubject,
-            this.rolesServ.fetch()
-        ]).pipe(
-            take(1),
-            tap(([sess, res]) => {
-                this.fullRoleList = res.data.rtWebRoles;
-                this.sess = sess;
-            })
-        ).subscribe();
-
+        this.rolesServ.fetch().subscribe(res => {
+            this.fullRoleList = res.data.rtWebRoles;
+        });
 
         // 获取默认选中
         this.usersServ.fetch({ id: this.userId }).pipe(
-            take(1),
             map(res => res.data.rtWebUsers[0])
         ).subscribe(user => {
             if (user) {
                 this.selectedRoleIds = user.roles.map(e => e.id);
             }
         });
-
-
     }
 
     onSave() {
@@ -83,7 +75,6 @@ export class RoleComponent implements OnInit, OnDestroy {
             if (!selectedRoleIds.includes(roleId)) {
                 selectedRoleIds.push(roleId);
             }
-
         } else {
             this.selectedRoleIds = selectedRoleIds.filter(id => id !== roleId);
         }
