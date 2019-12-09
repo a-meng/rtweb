@@ -1,5 +1,6 @@
 <div style='margin-bottom:20px;'>
-    <small>只能给别人分别配下一层的角色</small>
+    <small>1. 只能给别人分别配下一层的角色</small><br />
+    <small>2. 选多个角色时 不能是包含关系</small>
 </div>
 <details *ngFor="let role of sess?.roles" open>
     <summary>{{role.name}}</summary>

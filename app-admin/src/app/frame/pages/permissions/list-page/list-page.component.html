@@ -1,10 +1,5 @@
-
-<div>
-    <label>过滤：id=</label>
-    <input type="text" (input)='onFilterPermList(pidNode.value)' #pidNode>
-</div>
 <a style='display: inline-block;margin:15px 30px 0;' [routerLink]="['create']" *ngIf='canEdit'>+根节点</a>
-<app-tree [data]='filteredPermList' [tpl]='treeNode'>
+<app-tree [data]='permList' [tpl]='treeNode'>
     <ng-template #treeNode let-node='node'>
         <div class='node-container'>
             <div class='node-name'>
@@ -15,7 +10,7 @@
             <div class='node-btns' *ngIf='canEdit'>
                 <a [routerLink]="[ node.id,'edit' ]">编辑</a>
                 <a [routerLink]="[ 'create' ]" [queryParams]='{pid:node.id}'>添加子项</a>
-                <a href='#' (click)='$event.preventDefault();onDeleteById(node.node)'>删除</a>
+                <a href='#' *ngIf='node.children.length===0' (click)='$event.preventDefault();onDeleteById(node.node)'>删除</a>
             </div>
         </div>
     </ng-template>

@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 })
 export class FrameComponent implements OnInit, OnDestroy {
 
-    sess: Sess = null;
+    sess: Sess | null = null;
     headerNavList: HeaderNavItem[] = [];
     asideNavList: AsideNavItem[] = [];
 
@@ -24,31 +24,26 @@ export class FrameComponent implements OnInit, OnDestroy {
         private router: Router
     ) {
 
-        const ob1 = this.storeServ.sessSubject.subscribe(res => this.sess = res)
-
-
-        const headerList = [
+        this.headerNavList = [
             { accessPath: ['/rt'], label: '实时', href: '/rt' },
             { accessPath: ['/report'], label: '报表', href: '/report' }
-        ];
-        const asideList = [
+        ].map(e => {
+            return {
+                ...e,
+                visible: storeServ.access(e.accessPath)
+            };
+        });
+        this.asideNavList = [
             { accessPath: ['/admin/user'], label: '用户管理', path: '/users' },
             { accessPath: ['/admin/role'], label: '角色管理', path: '/roles' },
             { accessPath: ['/admin/permission'], label: '权限管理', path: '/permissions' },
-        ];
-
-        const ob2 = combineLatest(headerList.map(e => {
-            return this.storeServ.access(e.accessPath).pipe(
-                map(res => ({ ...e, visible: res }))
-            );
-        })).subscribe(res => this.headerNavList = res.filter(e => e.visible));
-        const ob3 = combineLatest(asideList.map(e => {
-            return this.storeServ.access(e.accessPath).pipe(
-                map(res => ({ ...e, visible: res }))
-            );
-        })).subscribe(res => this.asideNavList = res.filter(e => e.visible));
-
-        [ob1, ob2, ob3].forEach(ob => this.subscription.add(ob));
+        ].map(e => {
+            return {
+                ...e,
+                visible: storeServ.access(e.accessPath)
+            };
+        });
+        this.subscription.add(this.storeServ.sessSubject.subscribe(sess => this.sess = sess));
     }
 
     ngOnInit() {
@@ -57,11 +52,20 @@ export class FrameComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
     onLogout() {
-        this.logoutServ.mutate().subscribe(res => {
-            this.storeServ.sessSubject.next(null);
-            this.router.navigate(['/login']);
+        this.logoutServ.mutate().subscribe({
+            error: (err) => {
+                console.info('登录出错', err);
+            },
+            next: (res) => {
+                console.info('接口错误', res);
+                if (res.data) {
+                    this.storeServ.sessSubject.next(null);
+                    this.router.navigate(['/login']);
+                }
+            }
         });
     }
+
 }
 
 interface AsideNavItem {

@@ -17,7 +17,7 @@ app
     //随机延迟响应 （方便发现bug）
     .use(async (ctx, next) => {
         await next();
-        await delay(Math.random() * 2 * 1000);
+        await delay(Math.random() * 1 * 1000);
     })
     // 支持跨域
     .use(async (ctx, next) => {

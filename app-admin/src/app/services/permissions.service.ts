@@ -5,7 +5,7 @@ import { Permission } from 'src/types/RtWeb';
 
 
 export interface IPermDocInput {
-    pid: number;
+    pid: number | null;
     name: string;
     value: string;
     attr: string;

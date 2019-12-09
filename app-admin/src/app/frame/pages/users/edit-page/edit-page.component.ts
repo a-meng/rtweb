@@ -10,7 +10,7 @@ import { pick } from 'lodash';
 })
 export class EditPageComponent implements OnInit {
     form = {
-        id: null,
+        id: null as number | null,
         name: '',
         email: '',
         pwd: ''
@@ -43,14 +43,14 @@ export class EditPageComponent implements OnInit {
         event.preventDefault();
         const form = this.form;
         const doc: IUserDocInput = pick(this.form, ['name', 'email', 'pwd']);
-        if (!form.id) {
+        if (form.id === null) {
             this.createUserServ.mutate({ doc })
                 .subscribe(() => {
                     this.usersServ.watch().refetch().then(() => this.toListPage());
                 });
 
         } else {
-            this.updateUserServ.mutate({ id: parseInt(form.id, 10), doc })
+            this.updateUserServ.mutate({ id: parseInt(form.id + '', 10), doc })
                 .subscribe(() => {
                     this.usersServ.watch().refetch().then(() => this.toListPage());
                 });

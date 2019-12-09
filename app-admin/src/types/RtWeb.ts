@@ -7,12 +7,12 @@ export interface User {
 
 export interface Role {
     id: number;
-    pid: number;
+    pid: number | null;
     name: string;
 }
 export interface Permission {
     id: number;
-    pid: number;
+    pid: number | null;
     name: string;
     value: string;
     attr: string;

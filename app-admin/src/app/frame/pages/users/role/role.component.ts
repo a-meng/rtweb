@@ -17,7 +17,7 @@ export class RoleComponent implements OnInit, OnDestroy {
     userId = parseInt(this.route.snapshot.params.id, 10);
     fullRoleList: Role[] = [];
     // 父角色状态
-    sess: Sess = null;
+    sess: Sess|null = null;
 
     selectedRoleIds: number[] = [];    // 已选角色列表
     sub: Subscription = new Subscription();

@@ -55,9 +55,9 @@ export class PermsComponent implements OnInit, OnDestroy {
             id: this.roleId,
             permIds: this.selected
         }).subscribe(res => {
-            if (res.data.updateRolePerms) {
+            // if (res.data?.updateRolePerms) {
 
-            }
+            // }
         });
     }
     onChange(permId: number, checked: boolean) {
@@ -94,7 +94,7 @@ function findParentsId(list: Permission[], ids: number[]): number[] {
     }
 }
 function findChildrenId(list: Permission[], ids: number[]): number[] {
-    let children = [];
+    let children: number[] = [];
     ids.forEach(e => {
         const arr = list.filter(ee => ee.pid === e).map(ee => ee.id);
         children = children.concat(arr);

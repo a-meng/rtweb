@@ -28,6 +28,7 @@
     "@types/koa-session": "^5.10.1",
     "@types/koa-static": "^4.0.1",
     "@types/lodash": "^4.14.138",
-    "@types/mysql": "^2.15.7"
+    "@types/mysql": "^2.15.7",
+    "typescript": "^3.7.3"
   }
 }

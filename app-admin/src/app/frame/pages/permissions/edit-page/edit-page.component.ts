@@ -13,7 +13,7 @@ import { Permission } from 'src/types/RtWeb';
 })
 export class EditPageComponent implements OnInit, OnDestroy {
     form: Permission = {
-        id: null,
+        id: 0,
         pid: null,
         name: '',
         value: '',

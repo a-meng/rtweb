@@ -12,7 +12,7 @@ import findCids from 'src/app/shared/util/findCids';
 export class ListPageComponent implements OnInit, OnDestroy {
     userList: IUser[] = []; // 用户列表
     canEdit = false;        // 可编辑权限
-    childrenRoleId: number[] = [];  // 子角色id列表
+    childrenRoleId: (number | null)[] = [];  // 子角色id列表
     constructor(
         private usersServ: UsersService,
         private rolesServ: RolesService,
@@ -23,15 +23,21 @@ export class ListPageComponent implements OnInit, OnDestroy {
         this.rolesServ.fetch().subscribe(res => {
             const roles = res.data.rtWebRoles;
             this.storeServ.sessSubject.pipe(first()).subscribe(sess => {
-                const pids = sess.roles.map(e => e.id);
-                this.childrenRoleId = findCids(roles, pids).filter(id => !pids.includes(id));
+                let pids: (number | null)[] = [];
+                if (sess) {
+                    pids = sess.roles.map(e => e.id);
+                }
+
+                this.childrenRoleId = findCids(roles, pids).filter(id => {
+                    if (id === null) {
+                        return false;
+                    }
+                    return !pids.includes(id);
+                });
             });
         });
         this.refreshUserList();
-
-        this.storeServ.access(['/admin/user/edit']).pipe(
-            first()
-        ).subscribe(res => this.canEdit = res);
+        this.canEdit = this.storeServ.access(['/admin/user/edit']);
     }
 
     ngOnInit() {

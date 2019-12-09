@@ -1,5 +1,5 @@
-export default function findCids<T extends { id: number, pid: number }>(list: T[], ids: number[]): number[] {
-    let children = [];
+export default function findCids<T extends { id: number, pid: number | null }>(list: T[], ids: (number | null)[]): (number | null)[] {
+    let children: (number | null)[] = [];
     ids.forEach(e => {
         const arr = list.filter(ee => ee.pid === e).map(ee => ee.id);
         children = children.concat(arr);

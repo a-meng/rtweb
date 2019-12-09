@@ -11,24 +11,25 @@ import findCids from 'src/app/shared/util/findCids';
     styleUrls: ['./list-page.component.scss']
 })
 export class ListPageComponent implements OnInit {
-    selectedRoleId: number = null;
+    selectedRoleId: number | null = null;
     fullRoleList: IRole[] = [];
     roleList: IRole[] = [];
     canEdit = false;
-    sess: Sess = null;
+    sess: Sess | null = null;
     constructor(
         private rolesServ: RolesService,
         private deleteRoleServ: DeleteRoleService,
         private storeServ: StoreService
     ) {
-        this.storeServ.access(['/admin/role/edit']).pipe(
-            first()
-        ).subscribe(res => this.canEdit = res);
+        this.canEdit = this.storeServ.access(['/admin/role/edit']);
         this.storeServ.sessSubject.pipe(
             first()
         ).subscribe(sess => {
             this.sess = sess;
-            this.selectedRoleId = sess.roles[0].id;
+            if (sess) {
+                this.selectedRoleId = sess.roles[0].id;
+            }
+
             this.updateFullRoleList();
         });
     }

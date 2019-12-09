@@ -1,11 +1,11 @@
 <header>
-    <div style='font-size:24px;'>权限管理系统</div>
+    <div style='font-size:20px;'>权限管理系统</div>
     <a *ngFor='let item of headerNavList' [attr.href]="item.href">{{item.label}}</a>
 
     <div style='margin-left:auto;' [ngSwitch]="sess">
         <a *ngSwitchCase="null" [routerLink]="[ '/login']">登录</a>
         <ng-container *ngSwitchDefault>
-            {{sess?.name}}
+            {{sess?.name }}
             [<a href='#' (click)="$event.preventDefault();onLogout()">退出</a>]
         </ng-container>
     </div>

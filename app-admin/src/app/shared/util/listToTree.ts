@@ -1,19 +1,14 @@
 import { uniq } from 'lodash';
-class ListNode { id: number; pid: number; }
+interface ListNode { id: number; pid: number; }
 
-class TreeNode<T extends ListNode>  {
+interface TreeNode<T extends ListNode> {
     id: number; pid: number;
     node: T;
     children: TreeNode<T>[];
-    constructor(n: T) {
-        this.id = n.id;
-        this.pid = n.pid;
-        this.node = n;
-    }
 }
 
 function listToTree<T extends ListNode>(list: T[], id: number): TreeNode<T>[] {
-    const selected = []; const remain = [];
+    const selected: T[] = []; const remain: T[] = [];
     list.forEach(e => e.pid === id ? selected.push(e) : remain.push(e));
     return selected.map(e => {
         return {
@@ -46,7 +41,7 @@ function findRootIds<T extends ListNode>(list: T[]): number[] {
 
     const ids = list.map(e => e.id);
     // pid 在ids中不存在 的那个node就是根节点
-    return  pids.filter(e => !ids.includes(e));
+    return pids.filter(e => !ids.includes(e));
 }
 
 export { listToTree, isChildTree, ListNode, TreeNode, findRootIds };

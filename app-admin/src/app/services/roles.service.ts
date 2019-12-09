@@ -5,11 +5,11 @@ import { Role, RolePermission } from 'src/types/RtWeb';
 
 export interface IRole {
     id: number;
-    pid: number;
+    pid: number|null;
     name: string;
 }
 export interface IRoleDocInput {
-    pid: number;
+    pid: number | null;
     name: string;
 }
 
@@ -64,7 +64,7 @@ export class DeleteRoleService extends Mutation<{ affectedRows: number, message:
 }
 
 @Injectable({ providedIn: 'root' })
-export class RolePermsService extends Query<{ rtWebRoles: RolePermission[] }, { id?: number }> {
+export class RolePermsService extends Query<{ rtWebRoles: RolePermission[] }, { id?: number | null }> {
     document = gql(`
         query($id:Int){
             rtWebRoles(id:$id) {

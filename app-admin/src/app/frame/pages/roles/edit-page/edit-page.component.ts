@@ -8,7 +8,7 @@ import { switchMap } from 'rxjs/operators';
     styleUrls: ['./edit-page.component.scss']
 })
 export class EditPageComponent implements OnInit {
-    form: IRole = {
+    form: IRole | { id: null, pid: null, name: '' } = {
         id: null,
         pid: null,
         name: ''

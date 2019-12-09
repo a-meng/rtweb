@@ -24,11 +24,16 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         NGprogress.start();
         this.loginServ.mutate(this.form).subscribe(res => {
-            if (res.data.login) {
+            if (res.data && res.data.login) {
                 this.stroeServ.sessSubject.next(res.data.login);
                 this.router.navigate(['']);
             } else {
-                alert(res.errors[0].message);
+                if (res.errors && res.errors[0]) {
+                    alert(res.errors[0].message);
+                } else {
+                    alert('未知错误');
+                }
+
             }
             NGprogress.done();
         });

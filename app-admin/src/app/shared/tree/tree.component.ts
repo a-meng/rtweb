@@ -14,12 +14,12 @@ export class TreeComponent implements OnInit {
     set data(data: ListNode[]) {
         this._data = data;
         const ids = findRootIds(data);
-        this.treeData = [].concat(...ids.map(id => listToTree(data, id)));
+        this.treeData = ([] as TreeNode<ListNode>[][]).concat(...ids.map(id => listToTree(data, id)));
     }
     get data() {
         return this._data;
     }
-    @Input() tpl: TemplateRef<ListNode> = null;
+    @Input() tpl: TemplateRef<ListNode> | undefined;
 
     constructor() { }
 

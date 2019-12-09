@@ -9,7 +9,7 @@ export function fetchAuthPathsByPerms(parms: Permission[]): string[] {
 
 export async function fetchAuthPathsByRoleIds(roleIds: number[]): Promise<string[]> {
     let res = await findByRoleIds(roleIds);
-    return uniq([].concat(
+    return uniq(([] as string[]).concat(
         ...roleIds.map(e =>
             pathList(
                 res.filter(ee => ee.role_id === e)
