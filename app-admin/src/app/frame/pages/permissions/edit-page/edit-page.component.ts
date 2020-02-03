@@ -15,11 +15,7 @@ import { MessageService } from 'src/app/services/message.service';
     styleUrls: ['./edit-page.component.scss']
 })
 export class EditPageComponent implements OnInit, OnDestroy {
-<<<<<<< HEAD
     form: Perm = {
-=======
-    form: Permission = {
->>>>>>> 65af5d5afe05711977040297d51fe86530225bb6
         id: 0,
         pid: null,
         name: '',
